@@ -21,7 +21,7 @@ import {
   ClipboardList,
 } from 'lucide-react-native';
 import BottomNavigation from '../components/BottomNavigation';
-import { RootStackParamList } from '../types'; // path to your param list
+import { RootStackParamList } from '../types/types'; // path to your param list
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 interface MenuItemProps {
@@ -142,10 +142,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    paddingTop: 50, // Account for status bar
   },
   backButton: {
     padding: 8,
@@ -160,8 +159,9 @@ const styles = StyleSheet.create({
   },
   courseInfoSection: {
     paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingVertical: 48,
     alignItems: 'center',
+    backgroundColor: "red",
   },
   courseTitle: {
     fontSize: 28,
