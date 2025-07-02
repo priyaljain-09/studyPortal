@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  Animated,
 } from 'react-native';
 import {
   FileText,
@@ -37,6 +38,24 @@ type SidebarNavigationProps = NativeStackNavigationProp<
 
 const Sidebar: React.FC<SidebarProps> = ({ visible, onClose }) => {
   const navigation = useNavigation<SidebarNavigationProps>();
+  const slideAnim = React.useRef(new Animated.Value(-300)).current;
+
+  React.useEffect(() => {
+    if (visible) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: -300,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [visible]);
+
   const handleLogout = (): void => {
     navigation.navigate('Login');
   };
@@ -52,13 +71,20 @@ const Sidebar: React.FC<SidebarProps> = ({ visible, onClose }) => {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={styles.sidebar}>
+        <Animated.View 
+          style={[
+            styles.sidebar,
+            {
+              transform: [{ translateX: slideAnim }],
+            },
+          ]}
+        >
           {/* Profile Header */}
           <View style={styles.sidebarHeader}>
             <View style={styles.profileCircle}>
@@ -91,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ visible, onClose }) => {
           <View style={styles.sidebarFooter}>
             <Text style={styles.versionText}>Study Portal @2025</Text>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Tap outside to close */}
         <TouchableOpacity
@@ -108,13 +134,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   sidebar: {
     width: 300,
+    height: '100%',
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 0 },

@@ -12,6 +12,9 @@ import { Picker } from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App'; 
+import { AppDispatch } from '../redux/store';
+import { useDispatch } from 'react-redux'
+import { login } from '../redux/slice/application';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -19,23 +22,26 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 const LoginScreen = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedValue, setSelectedValue] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    navigation.navigate('Dashboard');
-    Alert.alert('Login', 'Login functionality would be implemented here');
+    const res = await dispatch(login({email, password}));
+    if(res === 200){
+      navigation.navigate('Dashboard');
+      Alert.alert('Login', 'Login functionality would be implemented here');
+    }
+
   };
 
   const handleGoogleSignIn = () => {
-    // Handle Google sign-in logic here
     Alert.alert('Google Sign In', 'Google sign-in functionality would be implemented here');
   };
 
@@ -76,18 +82,6 @@ const LoginScreen = () => {
         </View>
 
         {/* Dropdown/Picker */}
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={selectedValue}
-            onValueChange={(itemValue: any) => setSelectedValue(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Select" value="" color="#999999" />
-            <Picker.Item label="Student" value="student" />
-            <Picker.Item label="Teacher" value="teacher" />
-            <Picker.Item label="Parents" value="parents" />
-          </Picker>
-        </View>
 
         {/* Login Button */}
         <TouchableOpacity 
