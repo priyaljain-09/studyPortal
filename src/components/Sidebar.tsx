@@ -19,6 +19,10 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginsuccess } from '../redux/slice/application';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../redux/store';
 
 interface SidebarProps {
   visible: boolean;
@@ -39,7 +43,7 @@ type SidebarNavigationProps = NativeStackNavigationProp<
 const Sidebar: React.FC<SidebarProps> = ({ visible, onClose }) => {
   const navigation = useNavigation<SidebarNavigationProps>();
   const slideAnim = React.useRef(new Animated.Value(-300)).current;
-
+  const dispatch = useDispatch<AppDispatch>();
   React.useEffect(() => {
     if (visible) {
       Animated.timing(slideAnim, {
@@ -56,9 +60,12 @@ const Sidebar: React.FC<SidebarProps> = ({ visible, onClose }) => {
     }
   }, [visible]);
 
-  const handleLogout = (): void => {
-    navigation.navigate('Login');
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("accessToken");
+    dispatch(loginsuccess(false));
+    navigation.replace("Login");
   };
+  
 
   const menuItems: MenuItem[] = [
     { icon: FileText, label: 'Files', onPress: () => console.log('Files') },

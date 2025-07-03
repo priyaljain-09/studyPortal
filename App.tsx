@@ -1,8 +1,10 @@
 // App.tsx
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BootSplash from 'react-native-bootsplash';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
 
 // Screens
 import LoginScreen from './src/authentication/Login';
@@ -13,8 +15,10 @@ import Calendar from './src/screens/Calendar';
 import TodoScreen from './src/screens/TodoScreen';
 import Notifications from './src/screens/Notification';
 import Inbox from './src/screens/Inbox';
+import {RootState} from './src/redux/store';
+import {loginsuccess} from './src/redux/slice/application';
 
-// Type for stack navigator
+// Navigation types
 export type RootStackParamList = {
   Login: undefined;
   Dashboard: undefined;
@@ -33,38 +37,51 @@ export type RootStackParamList = {
   Inbox: undefined;
 };
 
-// Create stack navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const {successLogin} = useSelector(
+    (state: RootState) => state.applicationData,
+  );
+  const [isChecking, setIsChecking] = useState(true);
+
   useEffect(() => {
-    const init = async () => {
+    const checkLogin = async () => {
       try {
-        // Simulate delay (e.g. for loading assets)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await BootSplash.hide({ fade: true });
+        const token = await AsyncStorage.getItem('accessToken');
+        if (token) {
+          dispatch(loginsuccess(true));
+        }
       } catch (error) {
-        console.log('BootSplash error:', error);
+        console.log('Error checking token:', error);
+      } finally {
+        setIsChecking(false);
+        BootSplash.hide({fade: true});
       }
     };
 
-    init();
+    checkLogin();
   }, []);
+
+  if (isChecking) return null; // Show nothing while checking token
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="CourseDetail" component={CourseDetail} />
-        <Stack.Screen name="Calendar" component={Calendar} />
-        <Stack.Screen name="TodoScreen" component={TodoScreen} />
-        <Stack.Screen name="Notifications" component={Notifications} />
-        <Stack.Screen name="Inbox" component={Inbox} />
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        {successLogin ? (
+          <>
+            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="CourseDetail" component={CourseDetail} />
+            <Stack.Screen name="Calendar" component={Calendar} />
+            <Stack.Screen name="TodoScreen" component={TodoScreen} />
+            <Stack.Screen name="Notifications" component={Notifications} />
+            <Stack.Screen name="Inbox" component={Inbox} />
+          </>
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
