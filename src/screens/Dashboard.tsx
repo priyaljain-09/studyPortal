@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -19,11 +19,14 @@ import {
 } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
 import BottomNavigation from '../components/BottomNavigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { fetchDashboardSubject } from '../redux/slice/dashboard';
 
 interface Course {
   id: number;
   title: string;
-  subtitle: string;
+  description: string;
   color: string;
 }
 
@@ -37,35 +40,36 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+  const { allSubjects } = useSelector((state: RootState) => state.dashboardData);
 
-  const courses: Course[] = [
-    {
-      id: 1,
-      title: "Academic Integrity Awareness 2024",
-      subtitle: "Academic Integrity Awareness 2024",
-      color: "#6B7280",
-    },
-    {
-      id: 2,
-      title: "Advanced Programming for Data Science (2510)",
-      subtitle: "COSC2820",
-      color: "#BE185D",
-    },
-    {
-      id: 3,
-      title: "Algorithms and Analysis (2510)",
-      subtitle: "COSC2123",
-      color: "#0891B2",
-    },
-    {
-      id: 4,
-      title: "Database Concepts (2510)",
-      subtitle: "COSC2406",
-      color: "#A16207",
-    }
+  console.log("allSubjects", allSubjects)
+
+  const subjectColors = [
+    "#6B7280", // Gray
+    "#BE185D", // Pink
+    "#0891B2", // Cyan
+    "#A16207", // Amber
+    "#3B82F6", // Blue
+    "#10B981", // Green
+    "#EF4444", // Red
+    "#8B5CF6", // Violet
+    "#F59E0B", // Yellow
+    "#0EA5E9", // Sky
   ];
+  
 
+  useEffect(()=> {
+    dispatch(fetchDashboardSubject());
+  },[]);
+
+  const courses: Course[] = allSubjects?.subjects?.map((subject: any, index: number) => ({
+    id: subject.id,
+    title: subject.name,
+    description: subject.description || "", // Adjust if needed
+    color: subjectColors[index % subjectColors.length],
+  })) || [];
   const handleCoursePress = (course: Course) => {
     navigation.navigate('CourseDetail', { course });
   };
@@ -78,7 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
       <View style={styles.courseHeader}>
         <View style={styles.courseContent}>
           <Text style={styles.courseTitle}>{course.title}</Text>
-          <Text style={styles.courseSubtitle}>{course.subtitle}</Text>
+          <Text style={styles.courseSubtitle}>{course.description}</Text>
         </View>
         <TouchableOpacity 
           style={styles.moreButton}

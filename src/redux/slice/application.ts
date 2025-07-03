@@ -26,31 +26,20 @@ export const {setIsLoading, loginsuccess} = slice.actions;
 
 export default slice.reducer;
 
-export function login({email, password}: LoginCredentials) {
+export function login({ email, password }: LoginCredentials) {
   return async (dispatch: AppDispatch) => {
     dispatch(setIsLoading(true));
     try {
-      const response = await api.post('/users/login/', {email, password});
-
-      console.log('✅ Login Success:', response.data);
+      const response = await api.post('/users/login/', { email, password });
+      const { access } = response.data;
+      await AsyncStorage.setItem('accessToken', access);
       dispatch(loginsuccess(response.data));
-
       return response.status;
     } catch (error: any) {
-      if (error.response) {
-        // Server responded with a status code outside 2xx
-        console.log('❌ API Error Response:', error.response.data);
-        console.log('❌ Status Code:', error.response.status);
-        console.log('❌ Headers:', error.response.headers);
-      } else if (error.request) {
-        // Request was made, no response
-        console.log('❌ No Response:', error.request);
-      } else {
-        // Something else
-        console.log('❌ Error:', error.message);
-      }
+      console.log('❌ Error:', error.message);
     } finally {
       dispatch(setIsLoading(false));
     }
   };
 }
+
