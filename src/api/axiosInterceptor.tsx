@@ -8,13 +8,16 @@ import { Platform, Alert } from "react-native";
 
 const USE_LOCAL_SERVER = false; // Set to true when you want to test locally
 
-const baseURL = __DEV__
-  ? USE_LOCAL_SERVER
-    ? Platform.OS === "android"
-      ? "http://10.0.2.2:8000/api" // Android emulator
-      : "http://192.168.1.5:8000/api" // iOS/real device
-    : "https://classroom-portal.onrender.com/api" // Deployed URL
-  : "https://classroom-portal.onrender.com/api"; // Production
+// const baseURL = __DEV__
+//   ? USE_LOCAL_SERVER
+//     ? Platform.OS === "android"
+//       ? "http://10.0.2.2:8000/api" // Android emulator
+//       : "http://192.168.1.5:8000/api" // iOS/real device
+//     : "https://classroom-portal.onrender.com/api" // Deployed URL
+//   : "https://classroom-portal.onrender.com/api"; // Production
+
+const baseURL = "https://classroom-portal.onrender.com/api";
+console.log("baseurl", baseURL)
 
 export const api = axios.create({
   baseURL,

@@ -8,6 +8,8 @@ import { IDashboardState } from '../../types/dashboard';
 
 const initialState: IDashboardState = {
     allSubjects: {},
+    allAnnouncements: {},
+    announcemntDetail: {},
 };
 
 const slice = createSlice({
@@ -17,10 +19,16 @@ const slice = createSlice({
     getDashboardSubjects(state, action: PayloadAction<any>) {
       state.allSubjects = action.payload;
     },
+    getAllAnnouncements(state, action: PayloadAction<any>){
+      state.allAnnouncements = action.payload;
+    },
+    getAnnouncement(state, action: PayloadAction<any>){
+      state.announcemntDetail = action.payload;
+    },
   },
 });
 
-export const {getDashboardSubjects} = slice.actions;
+export const {getDashboardSubjects, getAllAnnouncements,getAnnouncement} = slice.actions;
 
 export default slice.reducer;
 
@@ -30,6 +38,36 @@ export function fetchDashboardSubject() {
     try {
       const response = await api.get('/users/student/dashboard/');
       dispatch(getDashboardSubjects(response.data));
+      return response.status;
+    } catch (error: any) {
+        console.log('❌ Error:', error.message);
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
+}
+
+export function fetchAllAnnouncementBySubject(id: number) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await api.get(`/users/subjects/${id}/announcements/`);
+      dispatch(getAllAnnouncements(response.data));
+      return response.status;
+    } catch (error: any) {
+        console.log('❌ Error:', error.message);
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
+}
+
+export function fetchAllAnnouncementById(id: number) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await api.get(`/users/announcements/${id}/`);
+      dispatch(getAnnouncement(response.data));
       return response.status;
     } catch (error: any) {
         console.log('❌ Error:', error.message);
