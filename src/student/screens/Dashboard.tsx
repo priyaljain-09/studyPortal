@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,11 +17,11 @@ import {
   MoreVertical,
   FileText,
 } from 'lucide-react-native';
-import Sidebar from '../components/Sidebar';
-import BottomNavigation from '../components/BottomNavigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
-import { fetchDashboardSubject } from '../redux/slice/dashboard';
+import Sidebar from '../../components/Sidebar';
+import BottomNavigation from '../../components/BottomNavigation';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../redux/store';
+import {fetchDashboardSubject} from '../../redux/slice/dashboard';
 
 interface Course {
   id: number;
@@ -39,61 +39,57 @@ interface DashboardProps {
   navigation: any;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
+const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
-  const { allSubjects } = useSelector((state: RootState) => state.dashboardData);
-
-  console.log("allSubjects", allSubjects)
+  const {allSubjects} = useSelector((state: RootState) => state.dashboardData);
 
   const subjectColors = [
-    "#6B7280", // Gray
-    "#BE185D", // Pink
-    "#0891B2", // Cyan
-    "#A16207", // Amber
-    "#3B82F6", // Blue
-    "#10B981", // Green
-    "#EF4444", // Red
-    "#8B5CF6", // Violet
-    "#F59E0B", // Yellow
-    "#0EA5E9", // Sky
+    '#6B7280', // Gray
+    '#BE185D', // Pink
+    '#0891B2', // Cyan
+    '#A16207', // Amber
+    '#3B82F6', // Blue
+    '#10B981', // Green
+    '#EF4444', // Red
+    '#8B5CF6', // Violet
+    '#F59E0B', // Yellow
+    '#0EA5E9', // Sky
   ];
-  
 
-  useEffect(()=> {
+  useEffect(() => {
     dispatch(fetchDashboardSubject());
-  },[]);
+  }, []);
 
-  const courses: Course[] = allSubjects?.subjects?.map((subject: any, index: number) => ({
-    id: subject.id,
-    title: subject.name,
-    description: subject.description || "", // Adjust if needed
-    color: subjectColors[index % subjectColors.length],
-  })) || [];
+  const courses: Course[] =
+    allSubjects?.subjects?.map((subject: any, index: number) => ({
+      id: subject.id,
+      title: subject.name,
+      description: subject.description || '', // Adjust if needed
+      color: subjectColors[index % subjectColors.length],
+    })) || [];
   const handleCoursePress = (course: Course) => {
-    navigation.navigate('CourseDetail', { course });
+    navigation.navigate('CourseDetail', {course});
   };
 
-  const CourseCard: React.FC<CourseCardProps> = ({ course, onPress }) => (
-    <TouchableOpacity 
-      style={[styles.courseCard, { backgroundColor: course.color }]}
+  const CourseCard: React.FC<CourseCardProps> = ({course, onPress}) => (
+    <TouchableOpacity
+      style={styles.cardContainer}
       onPress={() => onPress(course)}
-    >
-      <View style={styles.courseHeader}>
-        <View style={styles.courseContent}>
-          <Text style={styles.courseTitle}>{course.title}</Text>
-          <Text style={styles.courseSubtitle}>{course.description}</Text>
-        </View>
-        <TouchableOpacity 
+      activeOpacity={0.8}>
+      <View style={[styles.header, {backgroundColor: course.color}]}>
+        <TouchableOpacity
           style={styles.moreButton}
-          onPress={(e) => {
-            e.stopPropagation(); // Prevent triggering the card press
-            // Handle more options here
+          onPress={e => {
+            e.stopPropagation();
             console.log('More options for course:', course.title);
-          }}
-        >
+          }}>
           <MoreVertical size={20} color="white" />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.details}>
+        <Text style={styles.courseTitle}>{course.title}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -101,22 +97,22 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
-      
+
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
+        <View></View>
+        <TouchableOpacity
           style={styles.menuButton}
-          onPress={() => setSidebarVisible(true)}
-        >
+          onPress={() => setSidebarVisible(true)}>
           <Menu size={24} color="#374151" />
         </TouchableOpacity>
-        
+
         <View style={styles.logoContainer}>
           <View style={styles.logo}>
             <View style={styles.logoIcon} />
           </View>
         </View>
-        
+
         <TouchableOpacity style={styles.settingsButton}>
           <Settings size={24} color="#6B7280" />
         </TouchableOpacity>
@@ -125,17 +121,17 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
       {/* Main Content */}
       <ScrollView style={styles.mainContent}>
         <View style={styles.coursesHeader}>
-          <Text style={styles.coursesTitle}>Courses</Text>
+          <Text style={styles.coursesHeading}>Courses</Text>
           <TouchableOpacity>
             <Text style={styles.allCoursesLink}>All courses</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.coursesList}>
-          {courses.map((course) => (
-            <CourseCard 
-              key={course.id} 
-              course={course} 
+          {courses.map(course => (
+            <CourseCard
+              key={course.id}
+              course={course}
               onPress={handleCoursePress}
             />
           ))}
@@ -146,9 +142,9 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
       <BottomNavigation navigation={navigation} activeTab="Dashboard" />
 
       {/* Sidebar Component */}
-      <Sidebar 
-        visible={sidebarVisible} 
-        onClose={() => setSidebarVisible(false)} 
+      <Sidebar
+        visible={sidebarVisible}
+        onClose={() => setSidebarVisible(false)}
       />
     </View>
   );
@@ -159,10 +155,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9FAFB',
   },
+  cardContainer: {
+    borderRadius: 8,
+    marginVertical: 8,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    elevation: 2,
+    marginHorizontal: 16,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: 'white',
@@ -203,10 +207,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
   },
-  coursesTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#374151',
+  details: {
+    padding: 12,
+    backgroundColor: '#fff',
+  },
+  coursesHeading: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  courseCode: {
+    fontSize: 13,
+    color: '#666',
   },
   allCoursesLink: {
     fontSize: 16,
@@ -234,7 +247,7 @@ const styles = StyleSheet.create({
   courseTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: 'white',
+    color: 'black',
     marginBottom: 8,
     lineHeight: 24,
   },

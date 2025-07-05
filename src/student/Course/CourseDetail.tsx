@@ -19,10 +19,15 @@ import {
   FileEdit,
   GraduationCap,
   ClipboardList,
+  BookMarked,
+  User,
+  Video,
+  Users2,
+  HelpCircle,
 } from 'lucide-react-native';
-import BottomNavigation from '../components/BottomNavigation';
-import { RootStackParamList } from '../types/types'; // path to your param list
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import BottomNavigation from '../../components/BottomNavigation';
+import {RootStackParamList} from '../../types/types'; // path to your param list
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -31,16 +36,13 @@ interface MenuItemProps {
 }
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CourseDetail'>;
+const CourseDetail: React.FC<Props> = ({navigation, route}) => {
+  const {course} = route.params;
 
-const CourseDetail: React.FC<Props> = ({ navigation, route }) => {
-  const { course } = route.params;
-
-  const MenuItem: React.FC<MenuItemProps> = ({ icon, title, onPress }) => (
+  const MenuItem: React.FC<MenuItemProps> = ({icon, title, onPress}) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
       <View style={styles.menuItemLeft}>
-        <View style={styles.iconContainer}>
-          {icon}
-        </View>
+        <View style={styles.iconContainer}>{icon}</View>
         <Text style={styles.menuItemText}>{title}</Text>
       </View>
       <ChevronRight size={20} color="#9CA3AF" />
@@ -54,77 +56,105 @@ const CourseDetail: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={course.color} />
-      
+
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: course.color }]}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={handleBackPress}
-        >
+      <View style={[styles.header, {backgroundColor: course.color}]}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
-        
-        <Text style={styles.headerTitle}>{course.subtitle}</Text>
-        
+
+        {/* <Text style={styles.headerTitle}>{course.subtitle}</Text> */}
+
         <View style={styles.placeholder} />
       </View>
 
       {/* Course Info Section */}
-      <View style={[styles.courseInfoSection, { backgroundColor: course.color }]}>
+      <View style={[styles.courseInfoSection, {backgroundColor: course.color}]}>
         <Text style={styles.courseTitle}>{course.title}</Text>
         <Text style={styles.courseSemester}>PGRD Semester 1 2025 (2510)</Text>
       </View>
 
-      {/* Main Content */}
       <ScrollView style={styles.mainContent}>
-        <MenuItem 
-          icon={<Home size={20} color="#BE185D" />}
-          title="Home"
-          onPress={() => console.log('Home pressed')}
-        />
-        
-        <Text style={styles.subText}>Front page</Text>
-        
-        <MenuItem 
+        <TouchableOpacity
+          style={styles.homePage}
+          onPress={() => navigation.navigate('CourseHome', {course})}>
+          <View style={styles.homeContainer}>
+            <Text style={styles.home}>Home</Text>
+            <Text style={styles.frontpage}>Front Page</Text>
+          </View>
+          <ChevronRight size={20} color="#9CA3AF" />
+        </TouchableOpacity>
+
+        <MenuItem
           icon={<Megaphone size={20} color="#BE185D" />}
           title="Announcements"
-          onPress={() => console.log('Announcements pressed')}
+          onPress={() => navigation.navigate('CourseAnnouncements', {course})}
         />
-        
-        <MenuItem 
+
+        <MenuItem
           icon={<BookOpen size={20} color="#BE185D" />}
           title="Syllabus"
           onPress={() => console.log('Syllabus pressed')}
         />
-        
-        <MenuItem 
+
+        <MenuItem
           icon={<Users size={20} color="#BE185D" />}
           title="Modules"
           onPress={() => console.log('Modules pressed')}
         />
-        
-        <MenuItem 
+
+        <MenuItem
           icon={<MessageSquare size={20} color="#BE185D" />}
           title="Discussions"
           onPress={() => console.log('Discussions pressed')}
         />
-        
-        <MenuItem 
+
+        <MenuItem
           icon={<FileEdit size={20} color="#BE185D" />}
           title="Assignments"
           onPress={() => console.log('Assignments pressed')}
         />
-        
-        <MenuItem 
+
+        <MenuItem
           icon={<GraduationCap size={20} color="#BE185D" />}
           title="Grades"
           onPress={() => console.log('Grades pressed')}
         />
-        
-        <MenuItem 
+
+        <MenuItem
           icon={<ClipboardList size={20} color="#BE185D" />}
           title="Student Surveys"
           onPress={() => console.log('Student Surveys pressed')}
+        />
+
+        <MenuItem
+          icon={<HelpCircle size={20} color="#BE185D" />}
+          title="Study Help 24/7 - Studiosity"
+          onPress={() => console.log('Study Help pressed')}
+        />
+
+        <MenuItem
+          icon={<Video size={20} color="#BE185D" />}
+          title="Echo360"
+          onPress={() => console.log('Echo360 pressed')}
+        />
+
+        <MenuItem
+          icon={<User size={20} color="#BE185D" />}
+          title="People"
+          onPress={() => console.log('People pressed')}
+        />
+
+        <MenuItem
+          icon={<BookMarked size={20} color="#BE185D" />}
+          title="Library and Study Support"
+          onPress={() => console.log('Library pressed')}
+        />
+
+        <MenuItem
+          icon={<Users2 size={20} color="#BE185D" />}
+          title="Collaborate Ultra"
+          onPress={() => console.log('Collaborate Ultra pressed')}
         />
       </ScrollView>
 
@@ -161,7 +191,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 48,
     alignItems: 'center',
-    backgroundColor: "red",
+    backgroundColor: 'red',
   },
   courseTitle: {
     fontSize: 28,
@@ -179,7 +209,35 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     backgroundColor: 'white',
-    paddingTop: 16,
+  },
+  homePage: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  homeContainer: {
+    flexDirection: 'column',
+    gap: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  home: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    fontSize: 24,
+    color: '#374151',
+    fontWeight: '500',
+  },
+  frontpage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    fontSize: 16,
+    color: '#374151',
+    fontWeight: '500',
   },
   menuItem: {
     flexDirection: 'row',

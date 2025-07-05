@@ -30,13 +30,14 @@ export function login({ email, password }: LoginCredentials) {
   return async (dispatch: AppDispatch) => {
     dispatch(setIsLoading(true));
     try {
+      console.log("response", {email, password},)
       const response = await api.post('/users/login/', { email, password });
       const { access } = response.data;
       await AsyncStorage.setItem('accessToken', access);
       dispatch(loginsuccess(response.data));
       return response.status;
     } catch (error: any) {
-      console.log('❌ Error:', error.message);
+      console.log('❌ called:', error);
     } finally {
       dispatch(setIsLoading(false));
     }
