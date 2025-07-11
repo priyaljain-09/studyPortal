@@ -10,6 +10,7 @@ const initialState: IDashboardState = {
     allSubjects: {},
     allAnnouncements: {},
     announcemntDetail: {},
+    allModules: {},
 };
 
 const slice = createSlice({
@@ -25,10 +26,13 @@ const slice = createSlice({
     getAnnouncement(state, action: PayloadAction<any>){
       state.announcemntDetail = action.payload;
     },
+    getAllModules(state, action: PayloadAction<any>){
+      state.allModules = action.payload;
+    },
   },
 });
 
-export const {getDashboardSubjects, getAllAnnouncements,getAnnouncement} = slice.actions;
+export const {getDashboardSubjects, getAllAnnouncements,getAnnouncement, getAllModules} = slice.actions;
 
 export default slice.reducer;
 
@@ -68,6 +72,21 @@ export function fetchAllAnnouncementById(id: number) {
     try {
       const response = await api.get(`/users/announcements/${id}/`);
       dispatch(getAnnouncement(response.data));
+      return response.status;
+    } catch (error: any) {
+        console.log('❌ Error:', error.message);
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
+}
+
+export function fetchModaulesBySubject(id: number) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await api.get(`/users/subjects/${id}/modules/`);
+      dispatch(getAllModules(response.data));
       return response.status;
     } catch (error: any) {
         console.log('❌ Error:', error.message);

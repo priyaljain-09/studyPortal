@@ -71,7 +71,7 @@ const CourseDetail: React.FC<Props> = ({navigation, route}) => {
       {/* Course Info Section */}
       <View style={[styles.courseInfoSection, {backgroundColor: course.color}]}>
         <Text style={styles.courseTitle}>{course.title}</Text>
-        <Text style={styles.courseSemester}>PGRD Semester 1 2025 (2510)</Text>
+        {/* <Text style={styles.courseSemester}>PGRD Semester 1 2025 (2510)</Text> */}
       </View>
 
       <ScrollView style={styles.mainContent}>
@@ -100,7 +100,7 @@ const CourseDetail: React.FC<Props> = ({navigation, route}) => {
         <MenuItem
           icon={<Users size={20} color="#BE185D" />}
           title="Modules"
-          onPress={() => console.log('Modules pressed')}
+          onPress={() => navigation.navigate('Modules', {course})}
         />
 
         <MenuItem

@@ -12,6 +12,7 @@ export type RootStackParamList = {
   CourseDetail: { course: Course };
   CourseAnnouncements: {course: Course}
   CourseHome: { course: Course };
+  Modules: {course: Course};
   AnnouncementDetails: {
     announcementId: number;
     courseColor: string;

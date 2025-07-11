@@ -21,6 +21,7 @@ import CourseHome from './src/student/Course/CourseHome';
 import CourseAnnouncements from './src/student/Course/Announcement';
 import { RootStackParamList } from './src/types/types';
 import AnnouncementDetails from './src/student/Course/AnnouncemetDetail';
+import Modules from './src/student/Course/Modules';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -62,6 +63,7 @@ const App: React.FC = () => {
             <Stack.Screen name="CourseHome" component={CourseHome} />
             <Stack.Screen name="CourseAnnouncements" component={CourseAnnouncements} />
             <Stack.Screen name="AnnouncementDetails" component={AnnouncementDetails} />
+            <Stack.Screen name="Modules" component={Modules} />
             <Stack.Screen name="Calendar" component={Calendar} />
             <Stack.Screen name="TodoScreen" component={TodoScreen} />
             <Stack.Screen name="Notifications" component={Notifications} />
