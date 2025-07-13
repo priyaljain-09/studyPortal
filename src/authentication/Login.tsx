@@ -8,13 +8,13 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../App';
-import {AppDispatch} from '../redux/store';
-import {useDispatch} from 'react-redux';
+import {AppDispatch, RootState} from '../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../redux/slice/application';
+import {ActivityIndicator} from 'react-native';
+import { RootStackParamList } from '../types/types';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -27,13 +27,13 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const {isLoading} = useSelector((state: RootState) => state.applicationData);
 
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-    console.log("Clicked")
     const res = await dispatch(login({email, password}));
     if (res === 200) {
       navigation.navigate('Dashboard');
@@ -49,82 +49,95 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>Euniq</Text>
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#1e40af" />
         </View>
-
-        {/* Title */}
-        <Text style={styles.title}>Login to your Account</Text>
-
-        {/* Email Input */}
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#999999"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </View>
-
-        {/* Password Input */}
-
-        <View style={styles.inputWrapper}>
-        <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#999999"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-          />
-        </View>
-
-        {/* Password toggle */}
-        <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}>
-          <Text style={styles.toggleText}>
-            {showPassword ? 'Hide' : 'Show'} Password
-          </Text>
-        </TouchableOpacity>
-
-        {/* Login Button */}
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={handleLogin}
-          activeOpacity={0.8}>
-          <Text style={styles.loginButtonText}>Log in</Text>
-        </TouchableOpacity>
-
-        {/* Divider */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>Or</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        {/* Google Sign In */}
-        <TouchableOpacity
-          style={styles.googleButton}
-          onPress={handleGoogleSignIn}
-          activeOpacity={0.8}>
-          <View style={styles.googleButtonContent}>
-            <View style={styles.googleIcon}>
-              <Text style={styles.googleIconText}>G</Text>
-            </View>
-            <Text style={styles.googleButtonText}>Sign in with Google</Text>
+      ) : (
+        <View style={styles.content}>
+          {/* Logo */}
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoText}>Euniq</Text>
           </View>
-        </TouchableOpacity>
-      </View>
+
+          {/* Title */}
+          <Text style={styles.title}>Login to your Account</Text>
+
+          {/* Email Input */}
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#999999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
+
+          {/* Password Input */}
+
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#999999"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+          </View>
+
+          {/* Password toggle */}
+          <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}>
+            <Text style={styles.toggleText}>
+              {showPassword ? 'Hide' : 'Show'} Password
+            </Text>
+          </TouchableOpacity>
+
+          {/* Login Button */}
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleLogin}
+            activeOpacity={0.8}>
+            <Text style={styles.loginButtonText}>Log in</Text>
+          </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.dividerContainer}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>Or</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          {/* Google Sign In */}
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleGoogleSignIn}
+            activeOpacity={0.8}>
+            <View style={styles.googleButtonContent}>
+              <View style={styles.googleIcon}>
+                <Text style={styles.googleIconText}>G</Text>
+              </View>
+              <Text style={styles.googleButtonText}>Sign in with Google</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9fafb',
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#f9fafb',

@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App'; // Adjust path as needed
+import { RootStackParamList } from '../../types/types';
 
 // Define navigation prop type
 type HomeScreenNavigationProp = NativeStackNavigationProp<

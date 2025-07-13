@@ -18,11 +18,11 @@ import {
 } from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginsuccess } from '../redux/slice/application';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store';
+import { RootStackParamList } from '../types/types';
 
 interface SidebarProps {
   visible: boolean;
@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ visible, onClose }) => {
   const handleLogout = async () => {
     await AsyncStorage.removeItem("accessToken");
     dispatch(loginsuccess(false));
-    navigation.replace("Login");
+    navigation.navigate("Login");
   };
   
 

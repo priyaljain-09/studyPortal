@@ -5,37 +5,24 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BootSplash from 'react-native-bootsplash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
-
-// Screens
+import {navigationRef} from './src/utils/navigationService';
 import LoginScreen from './src/authentication/Login';
-import Home from './src/screens/Home';
-import Dashboard from './src/screens/Dashboard';
-import CourseDetail from './src/screens/CourseDetail';
-import Calendar from './src/screens/Calendar';
-import TodoScreen from './src/screens/TodoScreen';
-import Notifications from './src/screens/Notification';
-import Inbox from './src/screens/Inbox';
+import Home from './src/student/screens/Home';
+import Dashboard from './src/student/screens/Dashboard';
+import CourseDetail from './src/student/Course/CourseDetail';
+import Calendar from './src/student/screens/Calendar';
+import TodoScreen from './src/student/screens/TodoScreen';
+import Notifications from './src/student/screens/Notification';
+import Inbox from './src/student/screens/Inbox';
 import {RootState} from './src/redux/store';
-import {loginsuccess} from './src/redux/slice/application';
-
-// Navigation types
-export type RootStackParamList = {
-  Login: undefined;
-  Dashboard: undefined;
-  Home: undefined;
-  CourseDetail: {
-    course: {
-      id: number;
-      title: string;
-      subtitle: string;
-      color: string;
-    };
-  };
-  Calendar: undefined;
-  TodoScreen: undefined;
-  Notifications: undefined;
-  Inbox: undefined;
-};
+import {loginsuccess, setShowToast} from './src/redux/slice/application';
+import CourseHome from './src/student/Course/CourseHome';
+import CourseAnnouncements from './src/student/Course/Announcement';
+import {RootStackParamList} from './src/types/types';
+import AnnouncementDetails from './src/student/Course/AnnouncemetDetail';
+import Modules from './src/student/Course/Modules';
+import ModuleDetails from './src/student/Course/ModulesDetail';
+import Toast from './src/components/Toast';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -54,7 +41,13 @@ const App: React.FC = () => {
           dispatch(loginsuccess(true));
         }
       } catch (error) {
-        console.log('Error checking token:', error);
+        dispatch(
+          setShowToast({
+            show: true,
+            type: 'error',
+            toastMessage: error || 'Something went wrong!',
+          }),
+        );
       } finally {
         setIsChecking(false);
         BootSplash.hide({fade: true});
@@ -67,13 +60,25 @@ const App: React.FC = () => {
   if (isChecking) return null; // Show nothing while checking token
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
+      <Toast />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {successLogin ? (
           <>
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="CourseDetail" component={CourseDetail} />
+            <Stack.Screen name="CourseHome" component={CourseHome} />
+            <Stack.Screen
+              name="CourseAnnouncements"
+              component={CourseAnnouncements}
+            />
+            <Stack.Screen
+              name="AnnouncementDetails"
+              component={AnnouncementDetails}
+            />
+            <Stack.Screen name="Modules" component={Modules} />
+            <Stack.Screen name="ModuleDetails" component={ModuleDetails} />
             <Stack.Screen name="Calendar" component={Calendar} />
             <Stack.Screen name="TodoScreen" component={TodoScreen} />
             <Stack.Screen name="Notifications" component={Notifications} />
