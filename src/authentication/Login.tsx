@@ -34,7 +34,6 @@ const LoginScreen = () => {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-    console.log('Clicked');
     const res = await dispatch(login({email, password}));
     if (res === 200) {
       navigation.navigate('Dashboard');

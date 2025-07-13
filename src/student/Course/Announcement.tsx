@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import {ArrowLeft} from 'lucide-react-native';
 import {Megaphone} from 'lucide-react-native'; // bullhorn icon
@@ -15,6 +16,7 @@ import {RootStackParamList} from '../../types/types';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import {fetchAllAnnouncementBySubject} from '../../redux/slice/dashboard';
+import BottomNavigation from '../../components/BottomNavigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CourseAnnouncements'>;
 
@@ -24,6 +26,8 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
   const {allAnnouncements} = useSelector(
     (state: RootState) => state.dashboardData,
   );
+  const {isLoading} = useSelector((state: RootState) => state.applicationData);
+
   useEffect(() => {
     dispatch(fetchAllAnnouncementBySubject(course.id));
   }, []);
@@ -47,39 +51,50 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={course.color} barStyle="light-content" />
-      <View style={[styles.header, {backgroundColor: course.color}]}>
-        <TouchableOpacity style={styles.backButton} onPress={navigation.goBack}>
-          <ArrowLeft size={24} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.pageTitle}>{course.title}</Text>
-      </View>
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={course.color} />
+        </View>
+      ) : (
+        <>
+          <View style={[styles.header, {backgroundColor: course.color}]}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={navigation.goBack}>
+              <ArrowLeft size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.pageTitle}>{course.title}</Text>
+          </View>
 
-      <FlatList
-        data={allAnnouncements?.announcements}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            style={styles.announcementItem}
-            onPress={() =>
-              navigation.navigate('AnnouncementDetails', {
-                announcementId: item.id,
-                courseColor: course.color,
-                courseTitle: course.title,
-              })
-            }>
-            <View style={styles.iconContainer}>
-              <Megaphone size={18} color="#bf1650" />
-            </View>
-            <View style={styles.textContainer}>
-              <Text style={styles.announcementTitle}>{item.title}</Text>
-              <Text style={styles.announcementDate}>
-                Last post: {formatDate(item.created_at)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+          <FlatList
+            data={allAnnouncements?.announcements}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.listContainer}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.announcementItem}
+                onPress={() =>
+                  navigation.navigate('AnnouncementDetails', {
+                    announcementId: item.id,
+                    courseColor: course.color,
+                    courseTitle: course.title,
+                  })
+                }>
+                <View style={styles.iconContainer}>
+                  <Megaphone size={18} color="#bf1650" />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.announcementTitle}>{item.title}</Text>
+                  <Text style={styles.announcementDate}>
+                    Last post: {formatDate(item.created_at)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        </>
+      )}
+      <BottomNavigation navigation={navigation} activeTab="Dashboard" />
     </SafeAreaView>
   );
 };
@@ -130,5 +145,10 @@ const styles = StyleSheet.create({
   announcementDate: {
     fontSize: 13,
     color: '#666',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

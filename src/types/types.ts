@@ -12,10 +12,19 @@ export type RootStackParamList = {
   CourseDetail: { course: Course };
   CourseAnnouncements: {course: Course}
   CourseHome: { course: Course };
+  Modules: {course: Course};
   AnnouncementDetails: {
     announcementId: number;
     courseColor: string;
     courseTitle: string;
+  };
+  ModuleDetails: {
+    moduleId: number;
+    courseColor: string;
+    courseTitle: string;
+    currentChapterIndex: number;
+    allChapters: Array<{id: number; name: string}>;
+    moduleName: string;
   };
   Calendar: undefined;
   TodoScreen: undefined;

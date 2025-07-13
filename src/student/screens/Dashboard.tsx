@@ -82,7 +82,6 @@ const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
           style={styles.moreButton}
           onPress={e => {
             e.stopPropagation();
-            console.log('More options for course:', course.title);
           }}>
           <MoreVertical size={20} color="white" />
         </TouchableOpacity>
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#fff',
     elevation: 2,
-    marginHorizontal: 16,
+    // marginHorizontal: 16,
   },
   header: {
     flexDirection: 'row',
@@ -230,7 +229,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   courseCard: {
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 16,
     marginBottom: 16,
     minHeight: 120,
