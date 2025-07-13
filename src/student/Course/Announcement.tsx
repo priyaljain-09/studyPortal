@@ -16,6 +16,7 @@ import {RootStackParamList} from '../../types/types';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import {fetchAllAnnouncementBySubject} from '../../redux/slice/dashboard';
+import BottomNavigation from '../../components/BottomNavigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CourseAnnouncements'>;
 
@@ -93,6 +94,7 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
           />
         </>
       )}
+      <BottomNavigation navigation={navigation} activeTab="Dashboard" />
     </SafeAreaView>
   );
 };

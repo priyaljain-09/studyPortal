@@ -18,6 +18,14 @@ export type RootStackParamList = {
     courseColor: string;
     courseTitle: string;
   };
+  ModuleDetails: {
+    moduleId: number;
+    courseColor: string;
+    courseTitle: string;
+    currentChapterIndex: number;
+    allChapters: Array<{id: number; name: string}>;
+    moduleName: string;
+  };
   Calendar: undefined;
   TodoScreen: undefined;
   Notifications: undefined;

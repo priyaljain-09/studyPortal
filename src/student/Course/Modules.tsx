@@ -21,6 +21,7 @@ import {RootStackParamList} from '../../types/types';
 import {fetchModaulesBySubject} from '../../redux/slice/dashboard';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
+import BottomNavigation from '../../components/BottomNavigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Modules'>;
 
@@ -79,7 +80,9 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
                   <TouchableOpacity
                     style={styles.sectionHeader}
                     onPress={() => toggleExpand(item.id)}>
-                    <Text style={styles.sectionTitle}>{item.name}: {item.description}</Text>
+                    <Text style={styles.sectionTitle}>
+                      {item.name}: {item.description}
+                    </Text>
                     {expandedIds.includes(item.id) ? (
                       <ChevronDown size={20} color="#374151" />
                     ) : (
@@ -90,13 +93,25 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
                   {expandedIds.includes(item.id) && (
                     <View>
                       {/* Chapters */}
-                      {item.chapters.map((chapter: any) => (
-                        <View key={chapter.id} style={styles.itemRow}>
+                      {item.chapters.map((chapter: any, index: number) => (
+                        <TouchableOpacity
+                          key={chapter.id}
+                          style={styles.itemRow}
+                          onPress={() =>
+                            navigation.navigate('ModuleDetails', {
+                              moduleId: chapter.id,
+                              courseColor: course.color,
+                              courseTitle: course.title,
+                              // Add these new parameters
+                              currentChapterIndex: index,
+                              allChapters: item.chapters,
+                              moduleName: item.name,
+                            })
+                          }>
                           <BookOpen size={18} color="#6B7280" />
                           <Text style={styles.itemText}>{chapter.name}</Text>
-                        </View>
+                        </TouchableOpacity>
                       ))}
-
                       {/* Materials */}
                       {item.materials.map((material: any) => (
                         <TouchableOpacity
@@ -104,9 +119,7 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
                           style={styles.itemRow}
                           onPress={() => openFile(material.file)}>
                           <FileText size={18} color="#6B7280" />
-                          <Text style={styles.itemText}>
-                            {material.title}
-                          </Text>
+                          <Text style={styles.itemText}>{material.title}</Text>
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -117,6 +130,7 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
           )}
         </>
       )}
+      <BottomNavigation navigation={navigation} activeTab="Dashboard" />
     </View>
   );
 };
@@ -145,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
     padding: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#D1D5DB",
+    borderBottomColor: '#D1D5DB',
   },
   sectionTitle: {
     fontSize: 20,
@@ -157,7 +171,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: '#E5E7EB',
     paddingLeft: 20,
     gap: 10,
   },

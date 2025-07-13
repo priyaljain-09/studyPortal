@@ -82,7 +82,6 @@ const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
           style={styles.moreButton}
           onPress={e => {
             e.stopPropagation();
-            console.log('More options for course:', course.title);
           }}>
           <MoreVertical size={20} color="white" />
         </TouchableOpacity>

@@ -9,7 +9,10 @@ import {
   ActivityIndicator,
   TextInput,
   FlatList,
+  useWindowDimensions,
 } from 'react-native';
+import RenderHtml from 'react-native-render-html';
+// import {useWindowDimensions} from 'react-native';
 import {ArrowLeft, SendHorizonal} from 'lucide-react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/types';
@@ -47,6 +50,7 @@ const AnnouncementDetails: React.FC<Props> = ({navigation, route}) => {
   const {announcemntDetail} = useSelector(
     (state: RootState) => state.dashboardData,
   );
+  const {width} = useWindowDimensions();
 
   const [comments, setComments] = useState([
     {id: '1', user: 'Priyal', text: 'Thanks for the update!'},
@@ -68,7 +72,6 @@ const AnnouncementDetails: React.FC<Props> = ({navigation, route}) => {
     };
     setComments([comment, ...comments]);
     setNewComment('');
-    // TODO: Post comment to API
   };
 
   const renderComment = ({item}: any) => (
@@ -96,7 +99,7 @@ const AnnouncementDetails: React.FC<Props> = ({navigation, route}) => {
         <>
           <FlatList
             data={comments}
-            keyExtractor={(item) => item.id}
+            keyExtractor={item => item.id}
             renderItem={renderComment}
             ListHeaderComponent={
               <View style={styles.contentContainer}>
@@ -115,9 +118,21 @@ const AnnouncementDetails: React.FC<Props> = ({navigation, route}) => {
                   </View>
                 </View>
                 <Text style={styles.title}>{announcemntDetail.title}</Text>
-                <Text style={styles.message}>
-                  {announcemntDetail.message?.replace(/\r\n|\n/g, '\n')}
-                </Text>
+                <RenderHtml
+                  contentWidth={width}
+                  source={
+                    announcemntDetail?.message
+                      ? {html: announcemntDetail.message}
+                      : {html: '<p>No announcement content available.</p>'}
+                  }
+                  tagsStyles={{
+                    p: {fontSize: 16, color: '#444', marginBottom: 8, lineHeight: 22},
+                    strong: {fontWeight: '700'},
+                    li: {marginBottom: 4, fontSize: 16, color: '#444', lineHeight: 22},
+                    ul: {marginBottom: 8, paddingLeft: 20},
+                    br: {marginBottom: 4},
+                  }}
+                />
                 <Text style={styles.commentHeader}>Comments</Text>
               </View>
             }

@@ -3,4 +3,5 @@ export interface IDashboardState {
     allAnnouncements: any;
     announcemntDetail: any;
     allModules: any;
+    chapterDetail: any;
   }
