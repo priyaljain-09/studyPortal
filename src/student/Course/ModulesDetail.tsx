@@ -91,11 +91,10 @@ const ModuleDetails: React.FC<Props> = ({navigation, route}) => {
           <ActivityIndicator size="large" color={courseColor} />
         </View>
       ) : (
-        <View style={styles.chapterContainer}>
+        <ScrollView contentContainerStyle={styles.chapterContainer}>
           <ModuleBanner moduleTitle={chapterDetail.name} />
 
           {/* Content */}
-          <ScrollView contentContainerStyle={styles.contentContainer}>
             <RenderHTML
               contentWidth={width}
               source={
@@ -120,9 +119,14 @@ const ModuleDetails: React.FC<Props> = ({navigation, route}) => {
                 ul: {marginBottom: 8, paddingLeft: 20},
                 br: {marginBottom: 4},
               }}
+              systemFonts={[]}
+              ignoredDomTags={[]}
+              ignoredStyles={[]}
+              enableExperimentalMarginCollapsing={false}
+              enableExperimentalBRCollapsing={false}
+              enableExperimentalGhostLinesPrevention={false}
             />
-          </ScrollView>
-        </View>
+        </ScrollView>
       )}
 
       {/* Navigation Footer */}
@@ -169,7 +173,6 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   chapterContainer: {
-    flex: 1,
     padding: 20,
   },
   banner: {
@@ -188,9 +191,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
     marginTop: 5,
-  },
-  contentContainer: {
-    padding: 20,
   },
   description: {
     fontSize: 15,

@@ -50,13 +50,15 @@ export function login({ email, password }: LoginCredentials) {
       dispatch(loginsuccess(response.data));
       return response.status;
     } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.detail || error?.message || "Something went wrong!";
       dispatch(
         setShowToast({
           show: true,
           type: "error",
-          toastMessage: "Something went wrong!",
+          toastMessage: errorMessage,
         })
-      ); 
+      );
        } finally {
       dispatch(setIsLoading(false));
     }

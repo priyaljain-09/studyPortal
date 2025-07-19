@@ -47,7 +47,7 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
 
   useEffect(() => {
     dispatch(fetchModaulesBySubject(course.id));
-  }, [course.id, dispatch]);
+  }, [course.id]);
 
   return (
     <View style={styles.container}>

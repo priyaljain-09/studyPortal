@@ -106,13 +106,13 @@ const CourseDetail: React.FC<Props> = ({navigation, route}) => {
         <MenuItem
           icon={<MessageSquare size={20} color="#BE185D" />}
           title="Discussions"
-          onPress={() => console.log('Discussions pressed')}
+          onPress={() => navigation.navigate('DiscussionList', {course})}
         />
 
         <MenuItem
           icon={<FileEdit size={20} color="#BE185D" />}
           title="Assignments"
-          onPress={() => console.log('Assignments pressed')}
+          onPress={() => navigation.navigate('AssignmentList', {course})}
         />
 
         <MenuItem
