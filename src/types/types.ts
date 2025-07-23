@@ -3,6 +3,7 @@ export type Course = {
   title: string;
   description: string;
   color: string;
+  icon: any;
 };
 
 export type RootStackParamList = {

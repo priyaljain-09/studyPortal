@@ -83,7 +83,7 @@ const ModuleDetails: React.FC<Props> = ({navigation, route}) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{courseTitle}</Text>
+        <Text style={styles.headerTitle}>Modules</Text>
       </View>
 
       {isLoading ? (
@@ -92,40 +92,41 @@ const ModuleDetails: React.FC<Props> = ({navigation, route}) => {
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.chapterContainer}>
-          <ModuleBanner moduleTitle={chapterDetail.name} />
+          {/* <ModuleBanner moduleTitle={chapterDetail.name} /> */}
+          <Text style={styles.chapterName}>{chapterDetail.name}</Text>
 
           {/* Content */}
-            <RenderHTML
-              contentWidth={width}
-              source={
-                chapterDetail?.description
-                  ? {html: chapterDetail.description}
-                  : {html: '<p>No chapter content available.</p>'}
-              }
-              tagsStyles={{
-                p: {
-                  fontSize: 16,
-                  color: '#444',
-                  marginBottom: 8,
-                  lineHeight: 22,
-                },
-                strong: {fontWeight: '700'},
-                li: {
-                  marginBottom: 4,
-                  fontSize: 16,
-                  color: '#444',
-                  lineHeight: 22,
-                },
-                ul: {marginBottom: 8, paddingLeft: 20},
-                br: {marginBottom: 4},
-              }}
-              systemFonts={[]}
-              ignoredDomTags={[]}
-              ignoredStyles={[]}
-              enableExperimentalMarginCollapsing={false}
-              enableExperimentalBRCollapsing={false}
-              enableExperimentalGhostLinesPrevention={false}
-            />
+          <RenderHTML
+            contentWidth={width}
+            source={
+              chapterDetail?.description
+                ? {html: chapterDetail.description}
+                : {html: '<p>No chapter content available.</p>'}
+            }
+            tagsStyles={{
+              p: {
+                fontSize: 16,
+                color: '#444',
+                marginBottom: 8,
+                lineHeight: 22,
+              },
+              strong: {fontWeight: '700'},
+              li: {
+                marginBottom: 4,
+                fontSize: 16,
+                color: '#444',
+                lineHeight: 22,
+              },
+              ul: {marginBottom: 8, paddingLeft: 20},
+              br: {marginBottom: 4},
+            }}
+            systemFonts={[]}
+            ignoredDomTags={[]}
+            ignoredStyles={[]}
+            enableExperimentalMarginCollapsing={false}
+            enableExperimentalBRCollapsing={false}
+            enableExperimentalGhostLinesPrevention={false}
+          />
         </ScrollView>
       )}
 
@@ -150,7 +151,7 @@ const ModuleDetails: React.FC<Props> = ({navigation, route}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <BottomNavigation navigation={navigation} activeTab="Dashboard" />
+      {/* <BottomNavigation navigation={navigation} activeTab="Dashboard" /> */}
     </SafeAreaView>
   );
 };
@@ -166,11 +167,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 14,
     gap: 10,
+    paddingTop: 60,
   },
   headerTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#fff',
+  },
+  chapterName: {
+    fontSize: 20,
+    fontWeight: 600,
+    color: "black",
   },
   chapterContainer: {
     padding: 20,

@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import {
   Calendar,
-  Bell,
   Mail,
   Home,
   FileText,
+  Clock,
 } from 'lucide-react-native';
 
 interface BottomNavigationProps {
@@ -74,10 +74,10 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
       />
       
       <NavItem
-        icon={<Bell />}
-        label="Notifications"
-        screenName="Notifications"
-        isActive={activeTab === 'Notifications'}
+        icon={<Clock />}
+        label="Attendance"
+        screenName="Attendance"
+        isActive={activeTab === 'Attendance'}
       />
       
       <NavItem

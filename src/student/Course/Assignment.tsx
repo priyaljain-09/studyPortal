@@ -1,5 +1,5 @@
 // AssignmentList.tsx
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,9 @@ import {
 } from 'lucide-react-native';
 import {fetchAssignmentBySubject} from '../../redux/slice/dashboard';
 import RenderHTML from 'react-native-render-html';
+import BottomNavigation from '../../components/BottomNavigation';
+import CourseTabs, {TabItem} from '../../components/Tabs';
+import {tabs} from '../../utils/constant';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AssignmentList'>;
 
@@ -34,12 +37,24 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
   const {course} = route.params;
   const dispatch = useDispatch<AppDispatch>();
   const {isLoading} = useSelector((state: RootState) => state.applicationData);
+  const [activeTab, setActiveTab] = useState('Assigments');
   const {allAssignment} = useSelector(
     (state: RootState) => state.dashboardData,
   );
   const {width} = useWindowDimensions();
 
   const today = new Date();
+
+  const handleBackPress = () => {
+    navigation.navigate('CourseDetail', {course});
+  };
+
+  const handleTabPress = (tab: TabItem) => {
+    setActiveTab(tab.label);
+    if (tab.route && tab.route !== 'Assigments') {
+      navigation.navigate(tab.route as any, {course: route.params.course});
+    }
+  };
 
   const getStatusIconAndColor = (item: any) => {
     const dueDate = new Date(item.due_date);
@@ -152,53 +167,72 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, {backgroundColor: course.color}]}>
       <StatusBar backgroundColor={course.color} barStyle="light-content" />
-
-      {isLoading ? (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={course.color} />
+      <View style={[styles.header, {backgroundColor: course.color}]}>
+        <TouchableOpacity style={styles.headerTop} onPress={handleBackPress}>
+          <ArrowLeft size={24} color="white" />
+        </TouchableOpacity>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>Modules</Text>
         </View>
-      ) : (
-        <>
-          <View style={[styles.header, {backgroundColor: course.color}]}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={navigation.goBack}>
-              <ArrowLeft size={24} color="white" />
-            </TouchableOpacity>
-            <Text style={styles.pageTitle}>{course.title}</Text>
-          </View>
-
-          <FlatList
-            data={allAssignment}
-            renderItem={renderAssignmentItem}
-            keyExtractor={item => item.id.toString()}
-            ListHeaderComponent={renderHeader}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
+      </View>
+      <View style={styles.mainContent}>
+        <View>
+          <CourseTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabPress={handleTabPress}
           />
-        </>
-      )}
-    </SafeAreaView>
+
+          {isLoading ? (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color={course.color} />
+            </View>
+          ) : (
+            <FlatList
+              data={allAssignment}
+              renderItem={renderAssignmentItem}
+              keyExtractor={item => item.id.toString()}
+              ListHeaderComponent={renderHeader}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listContent}
+            />
+          )}
+        </View>
+      </View>
+      <BottomNavigation navigation={navigation} activeTab="Dashboard" />
+    </View>
   );
 };
 
 export default AssignmentList;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
-  backButton: {
-    marginRight: 10,
-    padding: 4,
+  headerTop: {
+    paddingVertical: 16,
+    alignItems: 'flex-start',
+  },
+  headerContent: {
+    marginVertical: 30,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 24,
+    lineHeight: 36,
+    fontWeight: 'bold',
+  },
+  container: {flex: 1, backgroundColor: '#fff'},
+  mainContent: {
+    flex: 1,
+    paddingVertical: 20,
+    borderTopLeftRadius: 20,
+    backgroundColor: 'white',
+    borderTopRightRadius: 20,
   },
   pageTitle: {
     color: 'white',

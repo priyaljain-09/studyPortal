@@ -9,30 +9,28 @@ import {
 } from 'react-native';
 import {
   Menu,
-  Settings,
-  Calendar,
   Bell,
-  Mail,
-  Home,
-  MoreVertical,
-  FileText,
+  Search,
+  Triangle,
+  BookOpen,
+  Building,
+  Leaf,
 } from 'lucide-react-native';
 import Sidebar from '../../components/Sidebar';
-import BottomNavigation from '../../components/BottomNavigation';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import {fetchDashboardSubject} from '../../redux/slice/dashboard';
+import BottomNavigation from '../../components/BottomNavigation';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Course {
   id: number;
   title: string;
   description: string;
   color: string;
-}
-
-interface CourseCardProps {
-  course: Course;
-  onPress: (course: Course) => void;
+  time: string;
+  due?: number;
+  icon: string;
 }
 
 interface DashboardProps {
@@ -41,20 +39,26 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const {allSubjects} = useSelector((state: RootState) => state.dashboardData);
 
   const subjectColors = [
-    '#6B7280', // Gray
-    '#BE185D', // Pink
-    '#0891B2', // Cyan
-    '#A16207', // Amber
-    '#3B82F6', // Blue
+    '#6B7280',
+    '#BE185D',
+    '#F97316', // Orange
+    '#0891B2',
     '#10B981', // Green
-    '#EF4444', // Red
-    '#8B5CF6', // Violet
-    '#F59E0B', // Yellow
-    '#0EA5E9', // Sky
+    '#3B82F6', // Blue
+    '#FACC15', // Yellow
+  ];
+
+  const subjectIcons = [Triangle, BookOpen, Building, Leaf];
+
+  const timeSlots = [
+    'Today, 10:30 AM',
+    'Today, 3:30 PM',
+    'Thursday, 1:00 PM',
+    'Friday, 2:00 PM',
   ];
 
   useEffect(() => {
@@ -65,82 +69,101 @@ const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
     allSubjects?.subjects?.map((subject: any, index: number) => ({
       id: subject.id,
       title: subject.name,
-      description: subject.description || '', // Adjust if needed
+      description: subject.description || 'Progress',
       color: subjectColors[index % subjectColors.length],
+      time: timeSlots[index % timeSlots.length],
+      due: index === 0 ? 2 : undefined,
+      icon: subjectIcons[index % subjectIcons.length],
     })) || [];
+
   const handleCoursePress = (course: Course) => {
     navigation.navigate('CourseDetail', {course});
   };
 
-  const CourseCard: React.FC<CourseCardProps> = ({course, onPress}) => (
+  const SubjectCard: React.FC<{course: Course}> = ({course}) => (
+    <>
+    {/* {console.log("course", course)} */}
     <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() => onPress(course)}
-      activeOpacity={0.8}>
-      <View style={[styles.header, {backgroundColor: course.color}]}>
-        <TouchableOpacity
-          style={styles.moreButton}
-          onPress={e => {
-            e.stopPropagation();
-          }}>
-          <MoreVertical size={20} color="white" />
-        </TouchableOpacity>
+      style={styles.card}
+      onPress={() => handleCoursePress(course)}
+      activeOpacity={0.9}>
+      <View style={[styles.iconContainer, {backgroundColor: course.color}]}>
+        {React.createElement(course.icon, {
+          width: 30,
+          height: 30,
+          color: '#fff',
+        })}
       </View>
-
-      <View style={styles.details}>
-        <Text style={styles.courseTitle}>{course.title}</Text>
+      <View style={styles.cardContent}>
+        <View style={styles.titleRow}>
+          <Text style={styles.courseTitle}>{course.title}</Text>
+          {course.due && (
+            <View style={styles.dueBadge}>
+              <Text style={styles.dueText}>{course.due} due</Text>
+            </View>
+          )}
+        </View>
+        {/* <Text style={styles.courseSubtitle}>{course.description}</Text> */}
+        <Text style={styles.courseTime}>{course.time}</Text>
       </View>
     </TouchableOpacity>
+    </>
   );
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <View></View>
-        <TouchableOpacity
-          style={styles.menuButton}
-          onPress={() => setSidebarVisible(true)}>
-          <Menu size={24} color="#374151" />
-        </TouchableOpacity>
-
-        <View style={styles.logoContainer}>
-          <View style={styles.logo}>
-            <View style={styles.logoIcon} />
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <LinearGradient
+        colors={['#3B82F6', '#6366F1']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}></LinearGradient>
+      <LinearGradient
+        colors={['#3B82F6', '#6366F1']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        style={styles.headerContainer}>
+        <View style={styles.header}>
+          <View style={styles.greetingContainer}>
+            <TouchableOpacity onPress={() => setSidebarVisible(true)}>
+              <Menu size={24} color="white" />
+            </TouchableOpacity>
+            <View style={styles.greetingSection}>
+              <Text style={styles.greeting}>Good morning!</Text>
+              <Text style={styles.userName}>Alex Johnson</Text>
+            </View>
+          </View>
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={styles.iconButton}>
+              <Search size={20} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Bell size={20} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
+        <Text style={styles.sectionTitle}>My Subjects</Text>
+      </LinearGradient>
 
-        <TouchableOpacity style={styles.settingsButton}>
-          <Settings size={24} color="#6B7280" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Main Content */}
-      <ScrollView style={styles.mainContent}>
-        <View style={styles.coursesHeader}>
-          <Text style={styles.coursesHeading}>Courses</Text>
-          <TouchableOpacity>
-            <Text style={styles.allCoursesLink}>All courses</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.coursesList}>
+      {/* Remaining Subject Cards */}
+      <ScrollView
+        style={styles.mainContent}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.subjectsList}>
           {courses.map(course => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              onPress={handleCoursePress}
-            />
+            <SubjectCard key={course.id} course={course} />
           ))}
         </View>
+        <View style={styles.bottomPadding} />
       </ScrollView>
 
       {/* Bottom Navigation */}
       <BottomNavigation navigation={navigation} activeTab="Dashboard" />
 
-      {/* Sidebar Component */}
+      {/* Sidebar */}
       <Sidebar
         visible={sidebarVisible}
         onClose={() => setSidebarVisible(false)}
@@ -149,119 +172,141 @@ const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
   );
 };
 
+export default Dashboard;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9FAFB',
   },
-  cardContainer: {
-    borderRadius: 8,
-    marginVertical: 8,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    elevation: 2,
-    // marginHorizontal: 16,
+  headerContainer: {
+    paddingVertical: 40,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
   header: {
+    paddingVertical: 30,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    justifyContent: 'space-between',
   },
-  menuButton: {
-    padding: 8,
-  },
-  logoContainer: {
+  greetingContainer: {
     flex: 1,
+    flexDirection: 'row',
+    gap: 20,
     alignItems: 'center',
   },
-  logo: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#DC2626',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+  greetingSection: {
+    paddingHorizontal: 16,
   },
-  logoIcon: {
-    width: 20,
-    height: 20,
+  greeting: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  userName: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 16,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  iconButton: {
+    padding: 4,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: 'white',
+    // marginBottom: 20,
+    paddingHorizontal: 16,
+  },
+  firstCardContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  firstCard: {
     backgroundColor: 'white',
-    borderRadius: 10,
-  },
-  settingsButton: {
-    padding: 8,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 8,
+    elevation: 4,
   },
   mainContent: {
     flex: 1,
     paddingHorizontal: 16,
+    marginTop: -30,
   },
-  coursesHeader: {
+  subjectsList: {
+    gap: 16,
+    paddingTop: 10,
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  cardContent: {
+    flex: 1,
+    gap: 10,
+  },
+  titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20,
-  },
-  details: {
-    padding: 12,
-    backgroundColor: '#fff',
-  },
-  coursesHeading: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
     marginBottom: 4,
-  },
-  courseCode: {
-    fontSize: 13,
-    color: '#666',
-  },
-  allCoursesLink: {
-    fontSize: 16,
-    color: '#3B82F6',
-    fontWeight: '500',
-  },
-  coursesList: {
-    gap: 16,
-  },
-  courseCard: {
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    minHeight: 120,
-  },
-  courseHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  courseContent: {
-    flex: 1,
-    paddingRight: 16,
   },
   courseTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: 'black',
-    marginBottom: 8,
-    lineHeight: 24,
+    color: '#111827',
+  },
+  dueBadge: {
+    backgroundColor: '#EF4444',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  dueText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
   },
   courseSubtitle: {
+    color: '#6B7280',
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 4,
   },
-  moreButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+  courseTime: {
+    color: '#374151',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  bottomPadding: {
+    height: 20,
   },
 });
-
-export default Dashboard;
