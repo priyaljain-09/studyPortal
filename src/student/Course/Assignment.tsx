@@ -103,9 +103,10 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
           [{text: 'OK'}],
         );
       } else {
-        navigation.navigate('AssignmentQuestions', {
+        navigation.navigate('AssigmentDetails', {
           assignmentId: item.id,
-          color: course.color,
+          courseColor: course.color,
+          course: course,
         });
       }
     };
@@ -117,20 +118,6 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
 
           <View style={styles.textContainer}>
             <Text style={styles.assignmentTitle}>{item.title}</Text>
-            <RenderHTML
-              contentWidth={width}
-              source={{html: item.description}}
-              tagsStyles={{
-                p: {
-                  margin: 0,
-                  padding: 0,
-                  lineHeight: 20,
-                  fontSize: 14,
-                  color: '#6b7280',
-                },
-              }}
-              baseStyle={styles.assignmentDescription}
-            />
             <Text style={styles.assignmentDescription}>{item.due_date}</Text>
 
             <View style={styles.statusContainer}>
@@ -157,15 +144,6 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
     );
   };
 
-  const renderHeader = () => (
-    <View style={styles.listHeader}>
-      <View style={styles.gradingPeriodContainer}>
-        <Text style={styles.gradingPeriodLabel}>Grading Period:</Text>
-        <Text style={styles.gradingPeriodValue}>All</Text>
-      </View>
-    </View>
-  );
-
   return (
     <View style={[styles.container, {backgroundColor: course.color}]}>
       <StatusBar backgroundColor={course.color} barStyle="light-content" />
@@ -174,7 +152,7 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Modules</Text>
+          <Text style={styles.headerTitle}>{course.title}</Text>
         </View>
       </View>
       <View style={styles.mainContent}>
@@ -194,7 +172,6 @@ const AssignmentList: React.FC<Props> = ({navigation, route}) => {
               data={allAssignment}
               renderItem={renderAssignmentItem}
               keyExtractor={item => item.id.toString()}
-              ListHeaderComponent={renderHeader}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.listContent}
             />
@@ -222,9 +199,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: 'white',
-    fontSize: 24,
-    lineHeight: 36,
-    fontWeight: 'bold',
+    fontSize: 38,
+    fontWeight: 500,
   },
   container: {flex: 1, backgroundColor: '#fff'},
   mainContent: {
@@ -242,10 +218,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 20,
-  },
-  listHeader: {
-    paddingTop: 16,
-    paddingBottom: 8,
   },
   gradingPeriodContainer: {
     flexDirection: 'row',

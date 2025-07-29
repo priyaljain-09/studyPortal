@@ -8,15 +8,13 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
-  useWindowDimensions,
   Alert,
 } from 'react-native';
 import {RootStackParamList} from '../../types/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
-import RenderHTML from 'react-native-render-html';
-import {ArrowLeft, MessageCircle} from 'lucide-react-native';
+import {ArrowLeft, MessagesSquare} from 'lucide-react-native';
 import {fetchDiscussionBySubject} from '../../redux/slice/dashboard';
 import BottomNavigation from '../../components/BottomNavigation';
 import CourseTabs, {TabItem} from '../../components/Tabs';
@@ -32,7 +30,6 @@ const DiscussionList: React.FC<Props> = ({navigation, route}) => {
     (state: RootState) => state.dashboardData,
   );
   const {isLoading} = useSelector((state: RootState) => state.applicationData);
-  const {width} = useWindowDimensions();
 
   const handleBackPress = () => {
     navigation.navigate('CourseDetail', {course});
@@ -59,15 +56,20 @@ const DiscussionList: React.FC<Props> = ({navigation, route}) => {
         })
       }>
       <View style={styles.iconContainer}>
-        <MessageCircle size={20} color="#4f46e5" />
+        <MessagesSquare size={20} color={course.color} />
       </View>
 
       <View style={styles.textContainer}>
         <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.metaText}>
-          {item.replies.length} Replies •{' '}
-          {new Date(item.created_at).toLocaleDateString()}
-        </Text>
+        <View style={styles.metaInfo}>
+          {/* <Text style={styles.metaText}>Posted by {item.teacher_name}</Text> */}
+          <View style={styles.dateRow}>
+            <Text style={styles.metaText}>{item.replies.length} Replies</Text>
+            <Text style={styles.metaText}>
+              {new Date(item.created_at).toLocaleDateString()}
+            </Text>
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -80,7 +82,7 @@ const DiscussionList: React.FC<Props> = ({navigation, route}) => {
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Discussions</Text>
+          <Text style={styles.headerTitle}>{course.title}</Text>
         </View>
       </View>
       <View style={styles.mainContent}>
@@ -127,13 +129,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: 'white',
-    fontSize: 24,
-    lineHeight: 36,
-    fontWeight: 'bold',
+    fontSize: 38,
+    fontWeight: 500,
   },
   container: {
-    flex: 1, 
-    backgroundColor: '#fff'
+    flex: 1,
+    backgroundColor: '#fff',
   },
   mainContent: {
     flex: 1,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 0.5,
     borderBottomColor: '#e5e7eb',
@@ -158,8 +159,8 @@ const styles = StyleSheet.create({
   },
   textContainer: {flex: 1},
   title: {
-    fontSize: 15,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: 500,
     color: '#111827',
     marginBottom: 4,
   },
@@ -168,9 +169,19 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     marginBottom: 4,
   },
+  metaInfo: {
+    flex: 1,
+    gap: 5,
+  },
   metaText: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: 'gray',
+  },
+  dateRow: {
+    flex: 1,
+    paddingRight: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   loaderContainer: {
     flex: 1,

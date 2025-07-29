@@ -27,6 +27,8 @@ import AssignmentList from './src/student/Course/Assignment';
 import AssignmentQuestions from './src/student/Course/AssignmentQuestion';
 import DiscussionList from './src/student/Course/Discussion';
 import DiscussionDetails from './src/student/Course/DiscussionDetail';
+import AssigmentDetails from './src/student/Course/AssigmentDetail';
+import AssignmentSubmit from './src/student/Course/AssigmentSubmit';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -83,14 +85,28 @@ const App: React.FC = () => {
             />
             <Stack.Screen name="Modules" component={Modules} />
             <Stack.Screen name="ModuleDetails" component={ModuleDetails} />
+            <Stack.Screen
+              name="AssigmentDetails"
+              component={AssigmentDetails}
+            />
             <Stack.Screen name="AssignmentList" component={AssignmentList} />
-            <Stack.Screen name="AssignmentQuestions" component={AssignmentQuestions} />
+            <Stack.Screen
+              name="AssignmentQuestions"
+              component={AssignmentQuestions}
+            />
             <Stack.Screen name="Calendar" component={Calendar} />
+            <Stack.Screen
+              name="AssignmentSubmit"
+              component={AssignmentSubmit}
+            />
             <Stack.Screen name="DiscussionList" component={DiscussionList} />
             <Stack.Screen name="TodoScreen" component={TodoScreen} />
             <Stack.Screen name="Notifications" component={Notifications} />
             <Stack.Screen name="Inbox" component={Inbox} />
-            <Stack.Screen name="DiscussionDetails" component={DiscussionDetails} />
+            <Stack.Screen
+              name="DiscussionDetails"
+              component={DiscussionDetails}
+            />
           </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />

@@ -31,7 +31,7 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
   );
   const {isLoading} = useSelector((state: RootState) => state.applicationData);
 
-  const handleBackPress = () => {
+  const handleBackPress = (): void => {
     navigation.navigate('CourseDetail', {course});
   };
 
@@ -71,7 +71,7 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Announcements</Text>
+          <Text style={styles.headerTitle}>{course.title}</Text>
         </View>
       </View>
       <View style={styles.mainContent}>
@@ -139,9 +139,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: 'white',
-    fontSize: 24,
-    lineHeight: 36,
-    fontWeight: 'bold',
+    fontSize: 38,
+    fontWeight: 500,
   },
   container: {flex: 1, backgroundColor: '#fff'},
   mainContent: {

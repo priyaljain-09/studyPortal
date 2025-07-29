@@ -20,6 +20,7 @@ import {
 import BottomNavigation from '../../components/BottomNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/types';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CourseDetail'>;
 interface CardItem {
@@ -43,9 +44,9 @@ const cards: CardItem[] = [
     color: '#8B5CF6',
     route: 'CourseAnnouncements',
   },
-  { label: 'Syllabus', icon: FileText, color: '#10B981' },
-  { label: 'Grades', icon: CheckCircle, color: '#FACC15' },
-  { label: 'People', icon: Users, color: '#3B82F6' },
+  {label: 'Syllabus', icon: FileText, color: '#10B981'},
+  {label: 'Grades', icon: CheckCircle, color: '#FACC15'},
+  {label: 'People', icon: Users, color: '#3B82F6'},
   {
     label: 'Assignments',
     icon: ClipboardList,
@@ -63,7 +64,6 @@ const CourseDetail: React.FC<Props> = ({navigation, route}) => {
 
     const handleCardPress = () => {
       if (item) {
-        console.log('item', item?.route);
         navigation.navigate(item.route as any, {course});
       }
     };
@@ -97,11 +97,15 @@ const CourseDetail: React.FC<Props> = ({navigation, route}) => {
         </View>
       </View>
 
-      <View style={styles.content}>
+      <LinearGradient
+        colors={['#FFF0FF', '#E6EEFA']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        style={styles.content}>
         <View style={styles.cardGrid}>
           {cards.map((item, index) => renderCard(item, index))}
         </View>
-      </View>
+      </LinearGradient>
 
       <BottomNavigation navigation={navigation} activeTab="Dashboard" />
     </SafeAreaView>
@@ -128,8 +132,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 38,
+    fontWeight: 500,
     marginTop: 8,
   },
   content: {

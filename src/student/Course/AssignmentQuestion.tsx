@@ -24,19 +24,17 @@ import {
 type Props = NativeStackScreenProps<RootStackParamList, 'AssignmentQuestions'>;
 
 const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
-  const {assignmentId, color} = route.params;
+  const {assignmentId, color, course} = route.params;
   const dispatch = useDispatch<AppDispatch>();
   const {isLoading} = useSelector((state: RootState) => state.applicationData);
   const {allQuestions} = useSelector((state: RootState) => state.dashboardData);
-  //   const assignment = useSelector((state: RootState) =>
-  //     state.dashboardData.allAssignment.find(a => a.id === assignmentId)
-  //   );
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<{[key: number]: string}>({});
 
   useEffect(() => {
     dispatch(fetchAssigmentQuestions(assignmentId));
   }, [assignmentId]);
-
-  const [answers, setAnswers] = useState<{[key: number]: string}>({});
 
   const handleMCQSelect = (questionId: number, optionId: number) => {
     setAnswers(prev => ({
@@ -58,15 +56,19 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
       answer: answers[parseInt(questionId, 10)],
     }));
 
-    console.log('Submitting Payload:', payload);
-
     const res = await dispatch(submitAssimentQuestion(assignmentId, payload));
     if (res === 200) {
-      Alert.alert(
-        'Submitted',
-        'Your answers have been submitted successfully!',
-      );
-      navigation.goBack();
+       navigation.replace('AssignmentSubmit', {
+        assignmentId: assignmentId,
+        color: color,
+        course: course
+      });
+    }
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < allQuestions.questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
     }
   };
 
@@ -78,15 +80,21 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
     );
   }
 
+  const currentQuestion = allQuestions.questions[currentQuestionIndex];
+  const totalQuestions = allQuestions.questions.length;
+  const progressPercentage =
+    ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color} barStyle="light-content" />
 
+      {/* Header */}
       <View style={[styles.header, {backgroundColor: color}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.title}>{allQuestions.title}</Text>
+        <Text style={styles.headerTitle}>Quiz</Text>
       </View>
 
       {isLoading ? (
@@ -94,22 +102,40 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
           <ActivityIndicator size="large" color={color} />
         </View>
       ) : (
-      <ScrollView contentContainerStyle={styles.content}>
-        {allQuestions?.questions?.length > 0 &&
-          allQuestions?.questions.map((q: any, index: number) => (
-            <View key={q.id} style={styles.questionBlock}>
-              <Text style={styles.questionText}>
-                {index + 1}. {q.question_text.replace(/<[^>]+>/g, '')}
-              </Text>
+        <ScrollView contentContainerStyle={styles.content}>
 
-              {q.question_type === 'mcq' && q.options && (
+          {/* Progress Bar */}
+          <View style={styles.progressSection}>
+            <Text style={styles.progressText}>
+              Question {currentQuestionIndex + 1}/{totalQuestions}
+            </Text>
+            <View style={styles.progressBarBackground}>
+              <View
+                style={[
+                  styles.progressBar,
+                  {width: `${progressPercentage}%`, backgroundColor: "#BDBDBB"},
+                ]}
+              />
+            </View>
+          </View>
+
+          <View key={currentQuestion.id} style={styles.questionBlock}>
+            <Text style={styles.questionText}>
+              {currentQuestionIndex + 1}.{' '}
+              {currentQuestion.question_text.replace(/<[^>]+>/g, '')}
+            </Text>
+
+            {currentQuestion.question_type === 'mcq' &&
+              currentQuestion.options && (
                 <View style={styles.optionsContainer}>
-                  {q.options.map((option: any) => (
+                  {currentQuestion.options.map((option: any) => (
                     <TouchableOpacity
                       key={option.id}
                       style={styles.option}
-                      onPress={() => handleMCQSelect(q.id, option.id)}>
-                      {answers[q.id] === option.id.toString() ? (
+                      onPress={() =>
+                        handleMCQSelect(currentQuestion.id, option.id)
+                      }>
+                      {answers[currentQuestion.id] === option.id.toString() ? (
                         <CheckCircle2 size={20} color="#22c55e" />
                       ) : (
                         <Circle size={20} color="#6b7280" />
@@ -120,25 +146,35 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
                 </View>
               )}
 
-              {q.question_type === 'text' && (
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Type your answer here"
-                  value={answers[q.id] || ''}
-                  onChangeText={text => handleTextChange(q.id, text)}
-                  multiline
-                />
-              )}
-            </View>
-          ))}
-      </ScrollView>
+            {currentQuestion.question_type === 'text' && (
+              <TextInput
+                style={styles.textInput}
+                placeholder="Type your answer here"
+                value={answers[currentQuestion.id] || ''}
+                onChangeText={text =>
+                  handleTextChange(currentQuestion.id, text)
+                }
+                multiline
+              />
+            )}
+          </View>
+        </ScrollView>
       )}
-      <View style={[styles.submitContainer, {backgroundColor: '#fff'}]}>
-        <TouchableOpacity
-          style={[styles.submitButton, {backgroundColor: color}]}
-          onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit Assignment</Text>
-        </TouchableOpacity>
+
+      {/* Navigation Buttons */}
+      <View style={styles.submitContainer}>
+        {currentQuestionIndex === totalQuestions - 1 ? (
+          <TouchableOpacity
+          style={[styles.submitButton, {backgroundColor: color}]}            onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={handleNext}>
+            <Text style={styles.nextButtonText}>Next</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -152,12 +188,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 14,
+    paddingTop: 60,
   },
-  title: {
+  headerTitle: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 10,
+    flex: 1,
+  },
+  progressSection: {
+    flex: 1,
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  progressText: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 4,
+    color: '#111827',
+  },
+  progressBarBackground: {
+    height: 6,
+    backgroundColor: '#e5e7eb',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: 6,
+    borderRadius: 10,
   },
   content: {
     padding: 16,
@@ -165,18 +225,17 @@ const styles = StyleSheet.create({
   },
   questionBlock: {
     marginBottom: 20,
-    borderBottomWidth: 0.7,
-    borderBottomColor: '#ddd',
     paddingBottom: 10,
   },
   questionText: {
-    fontSize: 15,
+    fontSize: 22,
     fontWeight: '500',
-    marginBottom: 10,
+    marginVertical: 20,
     color: '#111827',
   },
   optionsContainer: {
     marginLeft: 10,
+    gap: 20,
   },
   option: {
     flexDirection: 'row',
@@ -198,18 +257,24 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   submitContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: 16,
-    borderTopWidth: 0.5,
-    borderTopColor: '#ddd',
     backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#e5e7eb',
   },
-
+  nextButton: {
+    backgroundColor: '#DCE7F3',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  nextButtonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   submitButton: {
-    marginTop: 20,
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: 'center',

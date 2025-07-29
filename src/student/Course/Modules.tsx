@@ -25,9 +25,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import BottomNavigation from '../../components/BottomNavigation';
 import CourseTabs, {TabItem} from '../../components/Tabs';
-import { tabs } from '../../utils/constant';
+import {tabs} from '../../utils/constant';
 
-// Type definitions
 interface Chapter {
   id: number;
   name: string;
@@ -88,7 +87,7 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
   const renderModuleItem: ListRenderItem<Module> = ({item, index}) => {
     const isExpanded = expandedIds.includes(item.id);
     const hasContent = item.chapters.length > 0 || item.materials.length > 0;
-    
+
     return (
       <View key={item.id}>
         <TouchableOpacity
@@ -116,7 +115,9 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
                 style={[
                   styles.itemRow,
                   styles.chapterItem,
-                  chapterIndex === item.chapters.length - 1 && item.materials.length === 0 && styles.lastItemRow
+                  chapterIndex === item.chapters.length - 1 &&
+                    item.materials.length === 0 &&
+                    styles.lastItemRow,
                 ]}
                 onPress={() =>
                   navigation.navigate('ModuleDetails', {
@@ -137,7 +138,7 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
                 </Text>
               </TouchableOpacity>
             ))}
-            
+
             {/* Materials */}
             {item.materials.map((material: Material, materialIndex: number) => (
               <TouchableOpacity
@@ -145,7 +146,8 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
                 style={[
                   styles.itemRow,
                   styles.materialItem,
-                  materialIndex === item.materials.length - 1 && styles.lastItemRow
+                  materialIndex === item.materials.length - 1 &&
+                    styles.lastItemRow,
                 ]}
                 onPress={() => openFile(material.file)}
                 activeOpacity={0.6}>
@@ -171,7 +173,7 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Modules</Text>
+          <Text style={styles.headerTitle}>{course.title}</Text>
         </View>
       </View>
       <View style={styles.mainContent}>
@@ -223,13 +225,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: 'white',
-    fontSize: 24,
-    lineHeight: 36,
-    fontWeight: 'bold',
+    fontSize: 38,
+    fontWeight: 500,
   },
   container: {
-    flex: 1, 
-    backgroundColor: '#fff'
+    flex: 1,
+    backgroundColor: '#fff',
   },
   mainContent: {
     flex: 1,
@@ -238,7 +239,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopRightRadius: 20,
   },
-  // Enhanced section header with better styling
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -265,11 +265,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
-  // Chevron icon styling
   chevronIcon: {
     padding: 4,
   },
-  // Dropdown content container
   dropdownContent: {
     backgroundColor: '#FFFFFF',
     marginHorizontal: 16,
@@ -311,7 +309,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#374151',
     flex: 1,
-    fontWeight: '500',
+    fontWeight: 500,
   },
   // Chapter specific styling
   chapterItem: {
