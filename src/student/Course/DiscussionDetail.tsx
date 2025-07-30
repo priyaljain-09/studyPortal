@@ -109,10 +109,7 @@ const DiscussionDetails: React.FC<Props> = ({navigation, route}) => {
     } else {
       newLikedReplies.add(replyId);
     }
-    setLikedReplies(newLikedReplies);
-    
-    // TODO: Send like/unlike request to backend
-    // dispatch(toggleReplyLike(replyId, !likedReplies.has(replyId)));
+    setLikedReplies(newLikedReplies);    
   };
 
   if (isLoading || !discussionDetails) {

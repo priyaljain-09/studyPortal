@@ -63,6 +63,10 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
     }
   };
 
+  const handleBackPress = (): void => {
+    navigation.navigate('CourseDetail', {course});
+  };
+
   const toggleExpand = (id: number) => {
     setExpandedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id],
@@ -75,13 +79,9 @@ const ModulesScreen: React.FC<Props> = ({navigation, route}) => {
     );
   };
 
-  const handleBackPress = (): void => {
-    navigation.navigate('CourseDetail', {course});
-  };
-
   useEffect(() => {
     dispatch(fetchModaulesBySubject(course.id));
-  }, [course.id, dispatch]);
+  }, [course.id]);
 
   // Enhanced render function for better dropdown effect
   const renderModuleItem: ListRenderItem<Module> = ({item, index}) => {

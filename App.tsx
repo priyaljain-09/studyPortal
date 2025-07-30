@@ -29,6 +29,9 @@ import DiscussionList from './src/student/Course/Discussion';
 import DiscussionDetails from './src/student/Course/DiscussionDetail';
 import AssigmentDetails from './src/student/Course/AssigmentDetail';
 import AssignmentSubmit from './src/student/Course/AssigmentSubmit';
+import Grades from './src/student/Course/Grades';
+import GradeDetail from './src/student/Course/GradesDetail';
+import Syllabus from './src/student/Course/Syllabus';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -93,6 +96,12 @@ const App: React.FC = () => {
             <Stack.Screen
               name="AssignmentQuestions"
               component={AssignmentQuestions}
+            />
+            <Stack.Screen name="Grades" component={Grades} />
+            <Stack.Screen name="Syllabus" component={Syllabus} />
+            <Stack.Screen
+              name="GradeDetail"
+              component={GradeDetail}
             />
             <Stack.Screen name="Calendar" component={Calendar} />
             <Stack.Screen

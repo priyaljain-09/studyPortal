@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
   ScrollView,
+  Alert,
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import {ArrowLeft} from 'lucide-react-native';
@@ -31,6 +32,23 @@ const AssigmentDetails: React.FC<Props> = ({navigation, route}) => {
   useEffect(() => {
     dispatch(fetchAssigmentQuestions(assignmentId));
   }, [assignmentId]);
+
+  const handleAssessment = () => {
+    if (allQuestions?.questions?.length > 0) {
+      navigation.navigate('AssignmentQuestions', {
+        assignmentId: allQuestions.id,
+        color: courseColor,
+        course: course,
+      });
+    } else {
+      Alert.alert(
+        "Assessment Not Ready",
+        "The assessment is currently not available. Please check back later.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+  
 
   return (
     <SafeAreaView style={[styles.container, {backgroundColor: courseColor}]}>
@@ -85,18 +103,13 @@ const AssigmentDetails: React.FC<Props> = ({navigation, route}) => {
               />
             </ScrollView>
 
+            {console.log('allQuestions', allQuestions?.questions)}
             {/* Fixed Bottom Button */}
             <View style={styles.bottomBar}>
               {allQuestions.assignment_type === 'mixed' ? (
                 <TouchableOpacity
                   style={[styles.button, styles.quizButton]}
-                  onPress={() => {
-                    navigation.navigate('AssignmentQuestions', {
-                      assignmentId: allQuestions.id,
-                      color: courseColor,
-                      course: course
-                    });
-                  }}>
+                  onPress={handleAssessment}>
                   <Text style={styles.quizButtonText}>Take Assessment</Text>
                 </TouchableOpacity>
               ) : (

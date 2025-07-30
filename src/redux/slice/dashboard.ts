@@ -1,19 +1,22 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AppDispatch} from '../store';
 import {api} from '../../api/axiosInterceptor';
-import { setIsLoading, setShowToast } from './application';
-import { IDashboardState } from '../../types/dashboard';
+import {setIsLoading, setShowToast} from './application';
+import {IDashboardState} from '../../types/dashboard';
 
 const initialState: IDashboardState = {
-    allSubjects: {},
-    allAnnouncements: {},
-    announcemntDetail: {},
-    allModules: {},
-    chapterDetail: {},
-    allAssignment: {},
-    allQuestions: {},
-    allDiscussion: {},
-    discussionDetails: {},
+  allSubjects: {},
+  allAnnouncements: {},
+  announcemntDetail: {},
+  allModules: {},
+  chapterDetail: {},
+  allAssignment: {},
+  allQuestions: {},
+  allDiscussion: {},
+  discussionDetails: {},
+  subjectGrades: {},
+  gradesDetail: {},
+  subjectSyllabus: [],
 };
 
 const slice = createSlice({
@@ -23,34 +26,56 @@ const slice = createSlice({
     getDashboardSubjects(state, action: PayloadAction<any>) {
       state.allSubjects = action.payload;
     },
-    getAllAnnouncements(state, action: PayloadAction<any>){
+    getAllAnnouncements(state, action: PayloadAction<any>) {
       state.allAnnouncements = action.payload;
     },
-    getAnnouncement(state, action: PayloadAction<any>){
+    getAnnouncement(state, action: PayloadAction<any>) {
       state.announcemntDetail = action.payload;
     },
-    getAllModules(state, action: PayloadAction<any>){
+    getAllModules(state, action: PayloadAction<any>) {
       state.allModules = action.payload;
     },
-    getChaperDetail(state, action: PayloadAction<any>){
+    getChaperDetail(state, action: PayloadAction<any>) {
       state.chapterDetail = action.payload;
     },
-    getAllAssigment(state, action: PayloadAction<any>){
+    getAllAssigment(state, action: PayloadAction<any>) {
       state.allAssignment = action.payload;
     },
-    getAssigmentQuestions(state, action: PayloadAction<any>){
+    getAssigmentQuestions(state, action: PayloadAction<any>) {
       state.allQuestions = action.payload;
     },
-    getDiscussionList(state, action: PayloadAction<any>){
+    getDiscussionList(state, action: PayloadAction<any>) {
       state.allDiscussion = action.payload;
     },
-    getDiscussionDetail(state, action: PayloadAction<any>){
+    getDiscussionDetail(state, action: PayloadAction<any>) {
       state.discussionDetails = action.payload;
+    },
+    getSubjectGrades(state, action: PayloadAction<any>) {
+      state.subjectGrades = action.payload;
+    },
+    getGradesDetail(state, action: PayloadAction<any>) {
+      state.gradesDetail = action.payload;
+    },
+    getSubjectSyllabus(state, action: PayloadAction<any>) {
+      state.subjectSyllabus = action.payload;
     },
   },
 });
 
-export const {getDashboardSubjects, getAllAnnouncements,getAnnouncement, getAllModules, getChaperDetail, getAllAssigment, getAssigmentQuestions, getDiscussionList, getDiscussionDetail} = slice.actions;
+export const {
+  getDashboardSubjects,
+  getAllAnnouncements,
+  getAnnouncement,
+  getAllModules,
+  getChaperDetail,
+  getAllAssigment,
+  getAssigmentQuestions,
+  getDiscussionList,
+  getDiscussionDetail,
+  getSubjectGrades,
+  getGradesDetail,
+  getSubjectSyllabus,
+} = slice.actions;
 
 export default slice.reducer;
 
@@ -63,13 +88,15 @@ export function fetchDashboardSubject() {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -86,13 +113,15 @@ export function fetchAllAnnouncementBySubject(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -109,13 +138,15 @@ export function fetchAllAnnouncementById(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -132,13 +163,15 @@ export function fetchModaulesBySubject(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -155,13 +188,15 @@ export function fetchChapterById(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -178,13 +213,15 @@ export function fetchAssignmentBySubject(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -201,13 +238,15 @@ export function fetchAssigmentQuestions(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -215,21 +254,26 @@ export function fetchAssigmentQuestions(id: number) {
   };
 }
 
-export function submitAssimentQuestion(id: number,data: any) {
+export function submitAssimentQuestion(id: number, data: any) {
   return async (dispatch: AppDispatch) => {
     dispatch(setIsLoading(true));
     try {
-      const response = await api.post(`/users/assignments/${id}/submit/mixed/`, data);
+      const response = await api.post(
+        `/users/assignments/${id}/submit/mixed/`,
+        data,
+      );
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -246,13 +290,15 @@ export function fetchDiscussionBySubject(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -269,13 +315,15 @@ export function fetchDiscussionById(id: number) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));
@@ -283,7 +331,7 @@ export function fetchDiscussionById(id: number) {
   };
 }
 
-export function submitDiscussionReply(id: number,data: any) {
+export function submitDiscussionReply(id: number, data: any) {
   return async (dispatch: AppDispatch) => {
     dispatch(setIsLoading(true));
     try {
@@ -291,13 +339,90 @@ export function submitDiscussionReply(id: number,data: any) {
       return response.status;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.detail || error?.message || "Something went wrong!";
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
       dispatch(
         setShowToast({
           show: true,
-          type: "error",
+          type: 'error',
           toastMessage: errorMessage,
-        })
+        }),
+      );
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
+}
+
+export function fetchGradesBySubject(id: number) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await api.get(`/users/student/grades/${id}/`);
+      dispatch(getSubjectGrades(response.data));
+      return response.status;
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
+      dispatch(
+        setShowToast({
+          show: true,
+          type: 'error',
+          toastMessage: errorMessage,
+        }),
+      );
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
+}
+
+export function fetchGradesById(id: number) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await api.get(`/users/student/grade-detail/${id}/`);
+      dispatch(getGradesDetail(response.data));
+      return response.status;
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
+      dispatch(
+        setShowToast({
+          show: true,
+          type: 'error',
+          toastMessage: errorMessage,
+        }),
+      );
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
+}
+
+export function fetchSyllabusBySubject(id: number) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await api.get(`/users/subject/${id}/syllabus/`);
+      dispatch(getSubjectSyllabus(response.data));
+      return response.status;
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Something went wrong!';
+      dispatch(
+        setShowToast({
+          show: true,
+          type: 'error',
+          toastMessage: errorMessage,
+        }),
       );
     } finally {
       dispatch(setIsLoading(false));

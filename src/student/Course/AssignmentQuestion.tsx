@@ -81,6 +81,7 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
   }
 
   const currentQuestion = allQuestions.questions[currentQuestionIndex];
+  console.log("all", allQuestions.questions, currentQuestion)
   const totalQuestions = allQuestions.questions.length;
   const progressPercentage =
     ((currentQuestionIndex + 1) / totalQuestions) * 100;
@@ -119,11 +120,12 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
             </View>
           </View>
 
-          <View key={currentQuestion.id} style={styles.questionBlock}>
+          {currentQuestion.length > 0 && <View key={currentQuestion.id} style={styles.questionBlock}>
             <Text style={styles.questionText}>
               {currentQuestionIndex + 1}.{' '}
-              {currentQuestion.question_text.replace(/<[^>]+>/g, '')}
+              {currentQuestion?.question_text?.replace(/<[^>]+>/g, '')}
             </Text>
+            {console.log(currentQuestion)}
 
             {currentQuestion.question_type === 'mcq' &&
               currentQuestion.options && (
@@ -157,7 +159,7 @@ const AssignmentQuestions: React.FC<Props> = ({navigation, route}) => {
                 multiline
               />
             )}
-          </View>
+          </View>}
         </ScrollView>
       )}
 

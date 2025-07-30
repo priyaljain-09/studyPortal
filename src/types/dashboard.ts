@@ -8,4 +8,7 @@ export interface IDashboardState {
     allQuestions: any;
     allDiscussion: any;
     discussionDetails: any;
+    subjectGrades: any;
+    gradesDetail: any;
+    subjectSyllabus: any;
   }

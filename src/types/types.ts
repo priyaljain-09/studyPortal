@@ -14,6 +14,8 @@ export type RootStackParamList = {
   CourseAnnouncements: {course: Course}
   CourseHome: { course: Course };
   Modules: {course: Course};
+  Grades: {course: Course};
+  Syllabus: {course: Course}
   AssignmentList: {course: Course};
   DiscussionList: {course:Course};
   AssigmentDetails: {
@@ -21,6 +23,10 @@ export type RootStackParamList = {
     courseColor: string;
     course: Course;
   }
+  GradeDetail: {
+    gradeId: number;
+    courseColor: string;
+  };
   AssignmentSubmit: any;
   AnnouncementDetails: {
     announcementId: number;
