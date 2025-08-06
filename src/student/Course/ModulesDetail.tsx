@@ -12,13 +12,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {RootStackParamList} from '../../types/types';
-import ModuleBanner from '../../components/Banner';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import {fetchChapterById} from '../../redux/slice/dashboard';
 import RenderHTML from 'react-native-render-html';
 import {ArrowLeft} from 'lucide-react-native';
-import BottomNavigation from '../../components/BottomNavigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ModuleDetails'>;
 
@@ -77,76 +75,97 @@ const ModuleDetails: React.FC<Props> = ({navigation, route}) => {
   }, [moduleId]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: courseColor}]}>
       <StatusBar backgroundColor={courseColor} barStyle="light-content" />
       <View style={[styles.header, {backgroundColor: courseColor}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{courseTitle}</Text>
+        <Text style={styles.headerTitle}>Modules</Text>
       </View>
 
-      {isLoading ? (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={courseColor} />
-        </View>
-      ) : (
-        <View style={styles.chapterContainer}>
-          <ModuleBanner moduleTitle={chapterDetail.name} />
+      <View style={styles.mainContainer}>
+        {isLoading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={courseColor} />
+          </View>
+        ) : (
+          <>
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.chapterContainer}
+              showsVerticalScrollIndicator={true}>
+              {/* <ModuleBanner moduleTitle={chapterDetail.name} /> */}
+              <Text style={styles.chapterName}>{chapterDetail.name}</Text>
 
-          {/* Content */}
-          <ScrollView contentContainerStyle={styles.contentContainer}>
-            <RenderHTML
-              contentWidth={width}
-              source={
-                chapterDetail?.description
-                  ? {html: chapterDetail.description}
-                  : {html: '<p>No chapter content available.</p>'}
-              }
-              tagsStyles={{
-                p: {
-                  fontSize: 16,
-                  color: '#444',
-                  marginBottom: 8,
-                  lineHeight: 22,
-                },
-                strong: {fontWeight: '700'},
-                li: {
-                  marginBottom: 4,
-                  fontSize: 16,
-                  color: '#444',
-                  lineHeight: 22,
-                },
-                ul: {marginBottom: 8, paddingLeft: 20},
-                br: {marginBottom: 4},
-              }}
-            />
-          </ScrollView>
-        </View>
-      )}
+              {/* Content */}
+              <RenderHTML
+                contentWidth={width}
+                source={
+                  chapterDetail?.description
+                    ? {html: chapterDetail.description}
+                    : {html: '<p>No chapter content available.</p>'}
+                }
+                tagsStyles={{
+                  p: {
+                    fontSize: 16,
+                    color: '#444',
+                    marginBottom: 8,
+                    lineHeight: 22,
+                  },
+                  strong: {fontWeight: '700'},
+                  li: {
+                    marginBottom: 4,
+                    fontSize: 16,
+                    color: '#444',
+                    lineHeight: 22,
+                  },
+                  ul: {marginBottom: 8, paddingLeft: 20},
+                  br: {marginBottom: 4},
+                }}
+                systemFonts={[]}
+                ignoredDomTags={[]}
+                ignoredStyles={[]}
+                enableExperimentalMarginCollapsing={false}
+                enableExperimentalBRCollapsing={false}
+                enableExperimentalGhostLinesPrevention={false}
+              />
+            </ScrollView>
 
-      {/* Navigation Footer */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={goToPreviousChapter}
-          style={[styles.navButton, !canGoToPrevious && styles.disabledButton]}
-          disabled={!canGoToPrevious}>
-          <Text
-            style={[styles.navText, !canGoToPrevious && styles.disabledText]}>
-            ◀ Previous
-          </Text>
-        </TouchableOpacity>
+            {/* Navigation Footer */}
+            <View style={styles.footer}>
+              <TouchableOpacity
+                onPress={goToPreviousChapter}
+                style={[
+                  styles.navButton,
+                  !canGoToPrevious && styles.disabledButton,
+                ]}
+                disabled={!canGoToPrevious}>
+                <Text
+                  style={[
+                    styles.navText,
+                    !canGoToPrevious && styles.disabledText,
+                  ]}>
+                  ◀ Previous
+                </Text>
+              </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={goToNextChapter}
-          style={[styles.navButton, !canGoToNext && styles.disabledButton]}
-          disabled={!canGoToNext}>
-          <Text style={[styles.navText, !canGoToNext && styles.disabledText]}>
-            Next ▶
-          </Text>
-        </TouchableOpacity>
+              <TouchableOpacity
+                onPress={goToNextChapter}
+                style={[
+                  styles.navButton,
+                  !canGoToNext && styles.disabledButton,
+                ]}
+                disabled={!canGoToNext}>
+                <Text
+                  style={[styles.navText, !canGoToNext && styles.disabledText]}>
+                  Next ▶
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
-      <BottomNavigation navigation={navigation} activeTab="Dashboard" />
     </SafeAreaView>
   );
 };
@@ -156,21 +175,38 @@ export default ModuleDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 14,
     gap: 10,
+    paddingTop: 60,
   },
   headerTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#fff',
   },
-  chapterContainer: {
+  chapterName: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: 'black',
+    marginBottom: 16,
+  },
+  mainContainer: {
     flex: 1,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  chapterContainer: {
     padding: 20,
+    paddingBottom: 40,
   },
   banner: {
     width: '100%',
@@ -188,9 +224,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
     marginTop: 5,
-  },
-  contentContainer: {
-    padding: 20,
   },
   description: {
     fontSize: 15,

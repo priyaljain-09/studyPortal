@@ -4,4 +4,11 @@ export interface IDashboardState {
     announcemntDetail: any;
     allModules: any;
     chapterDetail: any;
+    allAssignment: any;
+    allQuestions: any;
+    allDiscussion: any;
+    discussionDetails: any;
+    subjectGrades: any;
+    gradesDetail: any;
+    subjectSyllabus: any;
   }

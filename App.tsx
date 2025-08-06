@@ -23,6 +23,16 @@ import AnnouncementDetails from './src/student/Course/AnnouncemetDetail';
 import Modules from './src/student/Course/Modules';
 import ModuleDetails from './src/student/Course/ModulesDetail';
 import Toast from './src/components/Toast';
+import AssignmentList from './src/student/Course/Assignment';
+import AssignmentQuestions from './src/student/Course/AssignmentQuestion';
+import DiscussionList from './src/student/Course/Discussion';
+import DiscussionDetails from './src/student/Course/DiscussionDetail';
+import AssigmentDetails from './src/student/Course/AssigmentDetail';
+import AssignmentSubmit from './src/student/Course/AssigmentSubmit';
+import Grades from './src/student/Course/Grades';
+import GradeDetail from './src/student/Course/GradesDetail';
+import Syllabus from './src/student/Course/Syllabus';
+import People from './src/student/Course/People';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,10 +89,35 @@ const App: React.FC = () => {
             />
             <Stack.Screen name="Modules" component={Modules} />
             <Stack.Screen name="ModuleDetails" component={ModuleDetails} />
+            <Stack.Screen
+              name="AssigmentDetails"
+              component={AssigmentDetails}
+            />
+            <Stack.Screen name="AssignmentList" component={AssignmentList} />
+            <Stack.Screen
+              name="AssignmentQuestions"
+              component={AssignmentQuestions}
+            />
+            <Stack.Screen name="Grades" component={Grades} />
+            <Stack.Screen name="People" component={People} />
+            <Stack.Screen name="Syllabus" component={Syllabus} />
+            <Stack.Screen
+              name="GradeDetail"
+              component={GradeDetail}
+            />
             <Stack.Screen name="Calendar" component={Calendar} />
+            <Stack.Screen
+              name="AssignmentSubmit"
+              component={AssignmentSubmit}
+            />
+            <Stack.Screen name="DiscussionList" component={DiscussionList} />
             <Stack.Screen name="TodoScreen" component={TodoScreen} />
             <Stack.Screen name="Notifications" component={Notifications} />
             <Stack.Screen name="Inbox" component={Inbox} />
+            <Stack.Screen
+              name="DiscussionDetails"
+              component={DiscussionDetails}
+            />
           </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />

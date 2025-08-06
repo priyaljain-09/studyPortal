@@ -1,277 +1,208 @@
-// src/screens/CourseDetail.tsx
 import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  ScrollView,
   StatusBar,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import {
   ArrowLeft,
-  ChevronRight,
-  Home,
-  Megaphone,
   BookOpen,
-  Users,
   MessageSquare,
-  FileEdit,
-  GraduationCap,
+  Megaphone,
+  FileText,
+  CheckCircle,
+  Users,
   ClipboardList,
-  BookMarked,
-  User,
-  Video,
-  Users2,
-  HelpCircle,
 } from 'lucide-react-native';
 import BottomNavigation from '../../components/BottomNavigation';
-import {RootStackParamList} from '../../types/types'; // path to your param list
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-
-interface MenuItemProps {
-  icon: React.ReactNode;
-  title: string;
-  onPress?: () => void;
-}
+import {RootStackParamList} from '../../types/types';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CourseDetail'>;
+interface CardItem {
+  label: string;
+  icon: React.ComponentType<any>;
+  color: string;
+  route?: keyof RootStackParamList;
+}
+
+const cards: CardItem[] = [
+  {label: 'Modules', icon: BookOpen, color: '#8B5CF6', route: 'Modules'},
+  {
+    label: 'Discussion',
+    icon: MessageSquare,
+    color: '#F97316',
+    route: 'DiscussionList',
+  },
+  {
+    label: 'Announcements',
+    icon: Megaphone,
+    color: '#8B5CF6',
+    route: 'CourseAnnouncements',
+  },
+  {label: 'Syllabus', icon: FileText, color: '#10B981', route: 'Syllabus'},
+  {label: 'Grades', icon: CheckCircle, color: '#FACC15', route: 'Grades',},
+  {label: 'People', icon: Users, color: '#3B82F6', route: "People"},
+  {
+    label: 'Assignments',
+    icon: ClipboardList,
+    color: '#EF4444',
+    route: 'AssignmentList',
+  },
+];
+
 const CourseDetail: React.FC<Props> = ({navigation, route}) => {
   const {course} = route.params;
+  const CourseIcon = course.icon;
 
-  const MenuItem: React.FC<MenuItemProps> = ({icon, title, onPress}) => (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      <View style={styles.menuItemLeft}>
-        <View style={styles.iconContainer}>{icon}</View>
-        <Text style={styles.menuItemText}>{title}</Text>
-      </View>
-      <ChevronRight size={20} color="#9CA3AF" />
-    </TouchableOpacity>
-  );
+  const renderCard = (item: CardItem, index: number) => {
+    const IconComponent = item.icon;
+
+    const handleCardPress = () => {
+      if (item) {
+        navigation.navigate(item.route as any, {course});
+      }
+    };
+
+    return (
+      <TouchableOpacity
+        key={item.label}
+        style={styles.card}
+        onPress={handleCardPress}
+        activeOpacity={0.8}>
+        <IconComponent size={48} color={item.color} />
+        <Text style={styles.cardLabel}>{item.label}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate('Dashboard');
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={course.color} />
-
-      {/* Header */}
+    <SafeAreaView style={[styles.container, {backgroundColor: course.color}]}>
+      <StatusBar backgroundColor={course.color} barStyle="light-content" />
       <View style={[styles.header, {backgroundColor: course.color}]}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+        <TouchableOpacity style={styles.headerTop} onPress={handleBackPress}>
           <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
-
-        {/* <Text style={styles.headerTitle}>{course.subtitle}</Text> */}
-
-        <View style={styles.placeholder} />
+        <View style={styles.headerContent}>
+          <CourseIcon size={48} color="white" />
+          <Text style={styles.headerTitle}>{course?.title}</Text>
+        </View>
       </View>
 
-      {/* Course Info Section */}
-      <View style={[styles.courseInfoSection, {backgroundColor: course.color}]}>
-        <Text style={styles.courseTitle}>{course.title}</Text>
-        {/* <Text style={styles.courseSemester}>PGRD Semester 1 2025 (2510)</Text> */}
-      </View>
+      <LinearGradient
+        colors={['#FFF0FF', '#E6EEFA']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        style={styles.content}>
+        <View style={styles.cardGrid}>
+          {cards.map((item, index) => renderCard(item, index))}
+        </View>
+      </LinearGradient>
 
-      <ScrollView style={styles.mainContent}>
-        <TouchableOpacity
-          style={styles.homePage}
-          onPress={() => navigation.navigate('CourseHome', {course})}>
-          <View style={styles.homeContainer}>
-            <Text style={styles.home}>Home</Text>
-            <Text style={styles.frontpage}>Front Page</Text>
-          </View>
-          <ChevronRight size={20} color="#9CA3AF" />
-        </TouchableOpacity>
-
-        <MenuItem
-          icon={<Megaphone size={20} color="#BE185D" />}
-          title="Announcements"
-          onPress={() => navigation.navigate('CourseAnnouncements', {course})}
-        />
-
-        <MenuItem
-          icon={<BookOpen size={20} color="#BE185D" />}
-          title="Syllabus"
-          onPress={() => console.log('Syllabus pressed')}
-        />
-
-        <MenuItem
-          icon={<Users size={20} color="#BE185D" />}
-          title="Modules"
-          onPress={() => navigation.navigate('Modules', {course})}
-        />
-
-        <MenuItem
-          icon={<MessageSquare size={20} color="#BE185D" />}
-          title="Discussions"
-          onPress={() => console.log('Discussions pressed')}
-        />
-
-        <MenuItem
-          icon={<FileEdit size={20} color="#BE185D" />}
-          title="Assignments"
-          onPress={() => console.log('Assignments pressed')}
-        />
-
-        <MenuItem
-          icon={<GraduationCap size={20} color="#BE185D" />}
-          title="Grades"
-          onPress={() => console.log('Grades pressed')}
-        />
-
-        <MenuItem
-          icon={<ClipboardList size={20} color="#BE185D" />}
-          title="Student Surveys"
-          onPress={() => console.log('Student Surveys pressed')}
-        />
-
-        <MenuItem
-          icon={<HelpCircle size={20} color="#BE185D" />}
-          title="Study Help 24/7 - Studiosity"
-          onPress={() => console.log('Study Help pressed')}
-        />
-
-        <MenuItem
-          icon={<Video size={20} color="#BE185D" />}
-          title="Echo360"
-          onPress={() => console.log('Echo360 pressed')}
-        />
-
-        <MenuItem
-          icon={<User size={20} color="#BE185D" />}
-          title="People"
-          onPress={() => console.log('People pressed')}
-        />
-
-        <MenuItem
-          icon={<BookMarked size={20} color="#BE185D" />}
-          title="Library and Study Support"
-          onPress={() => console.log('Library pressed')}
-        />
-
-        <MenuItem
-          icon={<Users2 size={20} color="#BE185D" />}
-          title="Collaborate Ultra"
-          onPress={() => console.log('Collaborate Ultra pressed')}
-        />
-      </ScrollView>
-
-      {/* Bottom Navigation Component */}
       <BottomNavigation navigation={navigation} activeTab="Dashboard" />
-    </View>
+    </SafeAreaView>
   );
 };
+
+export default CourseDetail;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
-  backButton: {
-    padding: 8,
+  headerTop: {
+    paddingVertical: 16,
+    alignItems: 'flex-start',
+  },
+  headerContent: {
+    alignItems: 'center',
+    marginTop: 10,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
     color: 'white',
+    fontSize: 38,
+    fontWeight: 500,
+    marginTop: 8,
   },
-  placeholder: {
-    width: 40,
-  },
-  courseInfoSection: {
-    paddingHorizontal: 24,
-    paddingVertical: 48,
-    alignItems: 'center',
-    backgroundColor: 'red',
-  },
-  courseTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 8,
-    lineHeight: 34,
-  },
-  courseSemester: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
-    textAlign: 'center',
-  },
-  mainContent: {
+  content: {
     flex: 1,
     backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 20,
   },
-  homePage: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  homeContainer: {
-    flexDirection: 'column',
-    gap: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  home: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    fontSize: 24,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  frontpage: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    fontSize: 16,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  menuItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  cardGrid: {
     flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignContent: 'flex-start',
   },
-  iconContainer: {
-    width: 24,
-    height: 24,
-    marginRight: 16,
+  card: {
+    width: '31%',
+    aspectRatio: 0.9,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+  },
+  cardLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#111827',
+    marginTop: 12,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  tabItem: {
+    alignItems: 'center',
+    position: 'relative',
+  },
+  tabLabel: {
+    fontSize: 10,
+    color: '#1F2937',
+    marginTop: 2,
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -10,
+    backgroundColor: '#EF4444',
+    borderRadius: 10,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    minWidth: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuItemText: {
-    fontSize: 16,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  subText: {
-    fontSize: 14,
-    color: '#6B7280',
-    paddingHorizontal: 60,
-    paddingVertical: 4,
-    marginBottom: 8,
+  badgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });
-
-export default CourseDetail;

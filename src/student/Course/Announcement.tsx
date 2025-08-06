@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,16 +17,31 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
 import {fetchAllAnnouncementBySubject} from '../../redux/slice/dashboard';
 import BottomNavigation from '../../components/BottomNavigation';
+import CourseTabs, { TabItem } from '../../components/Tabs';
+import { tabs } from '../../utils/constant';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CourseAnnouncements'>;
 
 const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
   const dispatch = useDispatch<AppDispatch>();
   const {course} = route.params;
+  const [activeTab, setActiveTab] = useState('Announcements');
   const {allAnnouncements} = useSelector(
     (state: RootState) => state.dashboardData,
   );
   const {isLoading} = useSelector((state: RootState) => state.applicationData);
+
+  const handleBackPress = (): void => {
+    navigation.navigate('CourseDetail', {course});
+  };
+
+  const handleTabPress = (tab: TabItem) => {
+    setActiveTab(tab.label);
+    if (tab.route && tab.route !== 'Announcements') {
+      navigation.navigate(tab.route as any, {course: route.params.course});
+    }
+  };
+
 
   useEffect(() => {
     dispatch(fetchAllAnnouncementBySubject(course.id));
@@ -49,23 +64,30 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, {backgroundColor: course.color}]}>
       <StatusBar backgroundColor={course.color} barStyle="light-content" />
+      <View style={[styles.header, {backgroundColor: course.color}]}>
+        <TouchableOpacity style={styles.headerTop} onPress={handleBackPress}>
+          <ArrowLeft size={24} color="white" />
+        </TouchableOpacity>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>{course.title}</Text>
+        </View>
+      </View>
+      <View style={styles.mainContent}>
+        <View>
+          <CourseTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabPress={handleTabPress}
+          />
+
       {isLoading ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color={course.color} />
         </View>
       ) : (
         <>
-          <View style={[styles.header, {backgroundColor: course.color}]}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={navigation.goBack}>
-              <ArrowLeft size={24} color="white" />
-            </TouchableOpacity>
-            <Text style={styles.pageTitle}>{course.title}</Text>
-          </View>
-
           <FlatList
             data={allAnnouncements?.announcements}
             keyExtractor={item => item.id}
@@ -94,29 +116,39 @@ const CourseAnnouncements: React.FC<Props> = ({navigation, route}) => {
           />
         </>
       )}
+      </View>
+      </View>
       <BottomNavigation navigation={navigation} activeTab="Dashboard" />
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default CourseAnnouncements;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#fff'},
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
-  backButton: {
-    marginRight: 10,
-    padding: 4,
+  headerTop: {
+    paddingVertical: 16,
+    alignItems: 'flex-start',
   },
-  pageTitle: {
+  headerContent: {
+    marginVertical: 30,
+  },
+  headerTitle: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    flexShrink: 1,
+    fontSize: 38,
+    fontWeight: 500,
+  },
+  container: {flex: 1, backgroundColor: '#fff'},
+  mainContent: {
+    flex: 1,
+    paddingVertical: 20,
+    borderTopLeftRadius: 20,
+    backgroundColor: 'white',
+    borderTopRightRadius: 20,
   },
   listContainer: {
     paddingBottom: 20,

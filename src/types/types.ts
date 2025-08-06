@@ -3,6 +3,7 @@ export type Course = {
   title: string;
   description: string;
   color: string;
+  icon: any;
 };
 
 export type RootStackParamList = {
@@ -13,11 +14,35 @@ export type RootStackParamList = {
   CourseAnnouncements: {course: Course}
   CourseHome: { course: Course };
   Modules: {course: Course};
+  Grades: {course: Course};
+  Syllabus: {course: Course};
+  People: {course: Course};
+  AssignmentList: {course: Course};
+  DiscussionList: {course:Course};
+  AssigmentDetails: {
+    assignmentId: number;
+    courseColor: string;
+    course: Course;
+  }
+  GradeDetail: {
+    gradeId: number;
+    courseColor: string;
+  };
+  AssignmentSubmit: any;
   AnnouncementDetails: {
     announcementId: number;
     courseColor: string;
     courseTitle: string;
   };
+  AssignmentQuestions:{
+    assignmentId: number;
+    color: string;
+    course: Course;
+  }
+  DiscussionDetails: {
+    discussionId: number;
+    color: string;
+  }
   ModuleDetails: {
     moduleId: number;
     courseColor: string;
