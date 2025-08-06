@@ -15,7 +15,8 @@ export type RootStackParamList = {
   CourseHome: { course: Course };
   Modules: {course: Course};
   Grades: {course: Course};
-  Syllabus: {course: Course}
+  Syllabus: {course: Course};
+  People: {course: Course};
   AssignmentList: {course: Course};
   DiscussionList: {course:Course};
   AssigmentDetails: {

@@ -46,7 +46,7 @@ const cards: CardItem[] = [
   },
   {label: 'Syllabus', icon: FileText, color: '#10B981', route: 'Syllabus'},
   {label: 'Grades', icon: CheckCircle, color: '#FACC15', route: 'Grades',},
-  {label: 'People', icon: Users, color: '#3B82F6'},
+  {label: 'People', icon: Users, color: '#3B82F6', route: "People"},
   {
     label: 'Assignments',
     icon: ClipboardList,
